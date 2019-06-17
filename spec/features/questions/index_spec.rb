@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User can create question', %q(
+feature 'User can see questions', %q(
   In order to find the question
   As an any user
   I'd like to be able to see questions list
