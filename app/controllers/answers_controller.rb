@@ -1,4 +1,6 @@
 class AnswersController < ApplicationController
+  before_action :authenticate_user!, except: %i[index show]
+
   expose :question
   expose :answers, from: :question
   expose :answer, ancestor: :question
@@ -6,9 +8,9 @@ class AnswersController < ApplicationController
   def create
     answer.question = question
     if answer.save
-      redirect_to question
+      redirect_to question, notice: 'Answer successfully created.'
     else
-      render :new
+      render 'questions/show'
     end
   end
 
