@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'User can see a question', %q(
-  In order to read question
+feature 'User can see the question', %q(
+  In order to read the question
   As an any user
-  I'd like to be able to see a question text
+  I'd like to be able to see the question text
 ) do
   given!(:question) { create(:question) }
 
