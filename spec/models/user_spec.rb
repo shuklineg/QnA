@@ -15,10 +15,10 @@ RSpec.describe User, type: :model do
       let(:answer) { create(:answer, user: user, question: question) }
 
       it 'question' do
-        expect(user.author_of?(question)).to eq true
+        expect(user.author_of?(question)).to be_truthy
       end
       it 'answer' do
-        expect(user.author_of?(answer)).to eq true
+        expect(user.author_of?(answer)).to be_truthy
       end
     end
 
@@ -27,10 +27,16 @@ RSpec.describe User, type: :model do
       let(:answer) { create(:answer, user: create(:user), question: question) }
 
       it 'question' do
-        expect(user.author_of?(question)).to eq false
+        expect(user.author_of?(question)).to be_falsey
       end
       it 'answer' do
-        expect(user.author_of?(answer)).to eq false
+        expect(user.author_of?(answer)).to be_falsey
+      end
+    end
+
+    context 'resource is nil' do
+      it 'nil' do
+        expect(user.author_of?(nil)).to be_falsey
       end
     end
   end
