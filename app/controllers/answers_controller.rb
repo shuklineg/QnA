@@ -7,11 +7,17 @@ class AnswersController < ApplicationController
 
   def create
     answer.question = question
+    answer.user = current_user
     if answer.save
       redirect_to question, notice: 'Answer successfully created.'
     else
       render 'questions/show'
     end
+  end
+
+  def destroy
+    answer.destroy
+    redirect_to answer.question, notice: 'Your answer has been deleted.'
   end
 
   private
