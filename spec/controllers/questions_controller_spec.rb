@@ -12,6 +12,10 @@ RSpec.describe QuestionsController, type: :controller do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
 
+      it 'saves current user as author' do
+        expect { post :create, params: { question: attributes_for(:question) } }.to change(user.questions, :count).by(1)
+      end
+
       it 'redirects to show view' do
         post :create, params: { question: attributes_for(:question) }
 
@@ -71,21 +75,30 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let!(:question) { create(:question, user: user) }
-    let!(:someone_else_queston) { create(:question, user: create(:user)) }
+    context 'user is author' do
+      let!(:question) { create(:question, user: user) }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to index' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
     end
 
-    it 'redirects to index' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
-    end
+    context 'user is not author' do
+      let!(:question) { create(:question, user: create(:user)) }
 
-    it 'author can delete question' do
-      expect { delete :destroy, params: { id: someone_else_queston } }.not_to change(Question, :count)
-      expect(response).to redirect_to someone_else_queston
+      it "user cannot delete someone else's question" do
+        expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)
+      end
+
+      it 'redirects to question' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to question_path(question)
+      end
     end
   end
 end

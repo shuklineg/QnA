@@ -19,6 +19,7 @@ feature 'User can create answer', %q(
       click_on 'Answer the question'
 
       expect(page).to have_content 'Answer successfully created.'
+      expect(page).to have_content 'Answer body'
     end
 
     scenario 'Answer the question with error' do
