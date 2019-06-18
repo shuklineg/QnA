@@ -7,6 +7,7 @@ class QuestionsController < ApplicationController
   expose :question
 
   def create
+    question.user = current_user
     if question.save
       redirect_to question, notice: 'Your question successfully created.'
     else
@@ -24,7 +25,7 @@ class QuestionsController < ApplicationController
 
   def destroy
     question.destroy
-    redirect_to questions_path
+    redirect_to questions_path, notice: 'Your question has been deleted.'
   end
 
   private

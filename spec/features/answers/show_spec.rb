@@ -5,7 +5,7 @@ feature 'User can see the answers to the question.', %q(
   As an any user
   I'd like to be able to see the answers to the question
 ) do
-  given!(:question) { create(:question) }
+  given!(:question) { create(:question, user: create(:user)) }
   given!(:answers) { 5.times.collect { create(:answer, :sequences, question: question) } }
 
   scenario 'Any user visits questions/show' do

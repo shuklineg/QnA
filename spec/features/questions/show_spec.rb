@@ -5,7 +5,7 @@ feature 'User can see the question', %q(
   As an any user
   I'd like to be able to see the question text
 ) do
-  given!(:question) { create(:question) }
+  given!(:question) { create(:question, user: create(:user)) }
 
   scenario 'Any user visits questions/show' do
     visit question_path(question)
