@@ -9,35 +9,11 @@ RSpec.describe User, type: :model do
 
   describe 'User#author_of?' do
     let(:user) { create(:user) }
+    let(:owned_question) { create(:question, user: user) }
+    let(:someone_elses_answer) { create(:answer, question: owned_question, user: create(:user)) }
 
-    context 'resource authored by the user' do
-      let(:question) { create(:question, user: user) }
-      let(:answer) { create(:answer, user: user, question: question) }
-
-      it 'question' do
-        expect(user.author_of?(question)).to be_truthy
-      end
-      it 'answer' do
-        expect(user.author_of?(answer)).to be_truthy
-      end
-    end
-
-    context 'resource authored by another user' do
-      let(:question) { create(:question, user: create(:user)) }
-      let(:answer) { create(:answer, user: create(:user), question: question) }
-
-      it 'question' do
-        expect(user.author_of?(question)).to be_falsey
-      end
-      it 'answer' do
-        expect(user.author_of?(answer)).to be_falsey
-      end
-    end
-
-    context 'resource is nil' do
-      it 'nil' do
-        expect(user.author_of?(nil)).to be_falsey
-      end
-    end
+    it { expect(user).to be_author_of(owned_question) }
+    it { expect(user).not_to be_author_of(someone_elses_answer) }
+    it { expect(user).not_to be_author_of(nil) }
   end
 end
