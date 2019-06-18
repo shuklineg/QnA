@@ -6,7 +6,7 @@ feature 'User can see questions', %q(
   I'd like to be able to see questions list
 ) do
   given(:user) { create(:user) }
-  given!(:questions) { 5.times.collect { create(:question, :sequences, user: user) } }
+  given!(:questions) { create_list(:question, 5, :sequences, user: user) }
 
   scenario 'Any user visits questions/index' do
     visit questions_path

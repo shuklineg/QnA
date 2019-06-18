@@ -16,18 +16,19 @@ feature 'User can delete own answers', %q(
     click_link 'Delete answer'
 
     expect(page).to have_content 'Your answer has been deleted.'
+    expect(page).not_to have_content answer.body
   end
 
   scenario "Authenticated user tries to delete someone else's answer" do
     login(another_user)
     visit question_path(question)
 
-    expect(page).not_to have_selector(:link_or_button, 'Delete answer')
+    expect(page).not_to have_link('Delete answer')
   end
 
   scenario 'Unauthenticated user tries to delete answer' do
     visit question_path(question)
 
-    expect(page).not_to have_selector(:link_or_button, 'Delete answer')
+    expect(page).not_to have_link('Delete answer')
   end
 end

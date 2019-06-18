@@ -1,4 +1,4 @@
 h2=question.title
 p=question.body
-- if question.user == current_user
+- if current_user&.author_of?(question)
   =link_to 'Delete question', question, method: :delete

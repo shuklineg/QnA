@@ -2,9 +2,9 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
 
   expose :questions, -> { Question.all }
-  expose :answer, -> { Answer.new(question: question) }
-  expose :answers, from: :question
   expose :question
+  expose :answers, from: :question
+  expose :answer, -> { question.answers.new }
 
   def create
     question.user = current_user
@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    if question.user == current_user
+    if current_user.author_of?(question)
       question.destroy
       redirect_to questions_path, notice: 'Your question has been deleted.'
     else
