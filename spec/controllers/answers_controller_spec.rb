@@ -16,7 +16,7 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create, params: { answer: attributes_for(:answer), question_id: question }, format: :js }.to change(user.answers, :count).by(1)
       end
 
-      it 'redirects to show view' do
+      it 'redirects to create view' do
         post :create, params: { answer: attributes_for(:answer), question_id: question, format: :js }
 
         expect(response).to render_template :create
@@ -28,7 +28,7 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question }, format: :js }.to_not change(question.answers, :count)
       end
 
-      it 're-renders new view' do
+      it 're-renders create view' do
         post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question, format: :js }
 
         expect(response).to render_template :create
@@ -61,6 +61,40 @@ RSpec.describe AnswersController, type: :controller do
       it 'redirects to question show' do
         delete :destroy, params: { id: answer }
         expect(response).to redirect_to question_path(question)
+      end
+    end
+  end
+
+  describe 'PUTCH #update' do
+    let!(:answer) { create(:answer, question: question, user: user ) }
+    let!(:someone_elses_answer) { create(:answer, question: question, user: create(:user) ) }
+
+    context 'with valid attributes' do
+      it 'update the answer in the database' do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+        answer.reload
+
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'redirects to update view' do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'with invalid attributes' do
+      it 'does not update the answer' do
+        expect do
+          patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
+        end.not_to change(answer, :body)
+      end
+
+      it 're-renders to update view' do
+        patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
+
+        expect(response).to render_template :update
       end
     end
   end

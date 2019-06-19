@@ -3,7 +3,7 @@ class AnswersController < ApplicationController
 
   expose :question
   expose :answers, from: :question
-  expose :answer, ancestor: :question
+  expose :answer
 
   def create
     answer.question = question
@@ -18,6 +18,11 @@ class AnswersController < ApplicationController
     else
       redirect_to answer.question
     end
+  end
+
+  def update
+    answer.update(answer_params)
+    @question = answer.question
   end
 
   private
