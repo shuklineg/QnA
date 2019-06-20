@@ -24,7 +24,7 @@ feature 'User can edit his answer', %q(
     end
 
     scenario 'edit his answer' do
-      within "#answer_#{answer.id}" do
+      within "#answer-#{answer.id}" do
         click_on 'Edit'
         fill_in 'Body', with: 'edited answer'
         click_on 'Save'
@@ -38,7 +38,7 @@ feature 'User can edit his answer', %q(
     end
 
     scenario 'edit his answer with errors' do
-      within "#answer_#{answer.id}" do
+      within "#answer-#{answer.id}" do
         click_on 'Edit'
         fill_in 'Body', with: ''
         click_on 'Save'
@@ -50,8 +50,8 @@ feature 'User can edit his answer', %q(
     end
 
     scenario "tries to edit other user's answer" do
-      within "#answer_#{someone_elses_answer.id}" do
-        expect(page).not_to have_link 'Edit'
+      within "#answer-#{someone_elses_answer.id}" do
+        expect(page).to_not have_link 'Edit'
       end
     end
   end

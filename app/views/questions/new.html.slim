@@ -1,5 +1,6 @@
 = form_with model: question, local: true do |f|
-  = render 'shared/errors', resource: question
+  div.question-errors
+    = render 'shared/errors', resource: question
   = f.label :title
   = f.text_field :title
   = f.label :body

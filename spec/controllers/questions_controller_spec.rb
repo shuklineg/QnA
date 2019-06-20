@@ -39,13 +39,13 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'PATCH #update' do
     context 'with valid attributes' do
       it 'assigns the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
+        patch :update, params: { id: question, question: attributes_for(:question), format: :js }
 
         expect(controller.question).to eq question
       end
 
       it 'change question attributes' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body'} }
+        patch :update, params: { id: question, question: { title: 'new title', body: 'new body'}, format: :js }
         question.reload
 
         expect(question.title).to eq 'new title'
@@ -53,14 +53,14 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 'redirects to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
+        patch :update, params: { id: question, question: attributes_for(:question), format: :js }
 
-        expect(response).to redirect_to question
+        expect(response).to render_template :update
       end
     end
 
     context 'with invalid attributes' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid), format: :js } }
       it 'does not change question' do
         question.reload
 
@@ -69,7 +69,19 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 're-renders edit' do
-        expect(response).to render_template :edit
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'user is not author' do
+      let!(:question) { create(:question) }
+
+      it "user can't edit someone else's question" do
+        patch :update, params: { id: question, question: { title: 'new title', body: 'new body'}, format: :js }
+        question.reload
+
+        expect(question.title).to_not eq 'new title'
+        expect(question.body).to_not eq 'new body'
       end
     end
   end
@@ -89,10 +101,10 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'user is not author' do
-      let!(:question) { create(:question, user: create(:user)) }
+      let!(:question) { create(:question) }
 
       it "user cannot delete someone else's question" do
-        expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
       end
 
       it 'redirects to question' do

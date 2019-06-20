@@ -13,7 +13,7 @@ RSpec.describe User, type: :model do
     let(:someone_elses_answer) { create(:answer, question: owned_question, user: create(:user)) }
 
     it { expect(user).to be_author_of(owned_question) }
-    it { expect(user).not_to be_author_of(someone_elses_answer) }
-    it { expect(user).not_to be_author_of(nil) }
+    it { expect(user).to_not be_author_of(someone_elses_answer) }
+    it { expect(user).to_not be_author_of(nil) }
   end
 end

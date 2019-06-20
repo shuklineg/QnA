@@ -1,4 +1,15 @@
-h2=question.title
-p=question.body
-- if current_user&.author_of?(question)
-  =link_to 'Delete question', question, method: :delete
+div id="question-#{question.id}"
+  h2=question.title
+  p=question.body
+  - if current_user&.author_of?(question)
+    =link_to 'Delete question', question, method: :delete
+    =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
+
+  = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
+    div.question-errors
+      = render 'shared/errors', resource: question
+    = f.label :title
+    = f.text_field :title
+    = f.label :body
+    = f.text_field :body
+    = f.submit 'Save'

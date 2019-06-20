@@ -1,13 +1,13 @@
-div id='answer_#{answer.id}'
+div id='answer-#{answer.id}'
 
   p= answer.body
   -if current_user&.author_of?(answer)
     =link_to 'Delete answer', answer, method: :delete
     =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
   
-  div.answer-errors
-    = render 'shared/errors', resource: answer
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
+    div.answer-errors
+      = render 'shared/errors', resource: answer  
     = f.label :body
     = f.text_area :body
     = f.submit 'Save'

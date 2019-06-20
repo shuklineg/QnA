@@ -54,7 +54,7 @@ RSpec.describe AnswersController, type: :controller do
       let!(:answer) { create(:answer, user: create(:user), question: question) }
 
       it "user cannot delete someone else's answer" do
-        expect { delete :destroy, params: { id: answer } }.not_to change(Answer, :count)
+        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
         expect(response).to redirect_to question_path(question)
       end
 
@@ -88,13 +88,24 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not update the answer' do
         expect do
           patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
-        end.not_to change(answer, :body)
+        end.to_not change(answer, :body)
       end
 
       it 're-renders to update view' do
         patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
 
         expect(response).to render_template :update
+      end
+    end
+
+    context 'user is not author' do
+      let!(:answer) { create(:answer) }
+
+      it "user can't edit someone else's answer" do
+        patch :update, params: { id: answer, answer: {body: 'new body'} }, format: :js
+        answer.reload
+
+        expect(answer.body).to_not eq 'new body'
       end
     end
   end
