@@ -48,7 +48,8 @@ feature 'User can edit his answer', %q(
         expect(page).to have_content "Body can't be blank"
       end
     end
-    scenario "tries to edit other user's question" do
+
+    scenario "tries to edit other user's answer" do
       within "#answer_#{someone_elses_answer.id}" do
         expect(page).not_to have_link 'Edit'
       end
