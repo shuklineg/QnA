@@ -119,10 +119,10 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.reload.best).to be_truthy
       end
 
-      it 'redirects to qustion' do
+      it 'render best' do
         post :best, params: { id: answer }, format: :js
 
-        expect(response).to redirect question_path(question)
+        expect(response).to render_template :best
       end
     end
 
@@ -135,10 +135,10 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.reload.best).to be_falsey
       end
 
-      it 'redirects to qustion' do
+      it 'render best' do
         post :best, params: { id: answer }, format: :js
 
-        expect(response).to redirect question_path(question)
+        expect(response).to render_template :best
       end
     end
   end

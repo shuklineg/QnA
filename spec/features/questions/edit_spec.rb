@@ -9,50 +9,101 @@ feature 'User can edit his question', %q(
   given!(:question) { create(:question, user: user) }
   given!(:someone_elses_question) { create(:question, :sequences) }
 
-  scenario 'Unauthenticated can not edit question' do
-    visit questions_path
+  describe 'Unauthenticated user' do
+    context 'on questions path' do
+      scenario "can't edit question" do
+        visit questions_path
 
-    expect(page).to_not have_link 'Edit'
+        expect(page).to_not have_link 'Edit'
+      end
+    end
+    context 'on question path' do
+      scenario "can't edit question" do
+        visit question_path(question)
+
+        expect(page).to_not have_link 'Edit'
+      end 
+    end
   end
 
   describe 'Authenticated user', js: true do
-    background do
-      login(user)
+    background { login(user) }
+    context 'questions path' do
+      background { visit questions_path }
 
-      visit questions_path
-    end
+      scenario 'edit his question' do
+        within "#question-#{question.id}" do
+          click_on 'Edit'
+          fill_in 'Title', with: 'New title'
+          fill_in 'Body', with: 'New body'
+          click_on 'Save'
 
-    scenario 'edit his question' do
-      within "#question-#{question.id}" do
-        click_on 'Edit'
-        fill_in 'Title', with: 'New title'
-        fill_in 'Body', with: 'New body'
-        click_on 'Save'
+          expect(page).to have_content 'New title'
+          expect(page).to have_content 'New body'
+          expect(page).to_not have_content question.title
+          expect(page).to_not have_content question.body
+        end
+      end
 
-        expect(page).to have_content 'New title'
-        expect(page).to have_content 'New body'
-        expect(page).to_not have_content question.title
-        expect(page).to_not have_content question.body
+      scenario 'edit his question with errors' do
+        within "#question-#{question.id}" do
+          click_on 'Edit'
+          fill_in 'Title', with: ''
+          fill_in 'Body', with: ''
+          click_on 'Save'
+
+          expect(page).to have_content question.title
+          expect(page).to have_content question.body
+          expect(page).to have_content "Title can't be blank"
+          expect(page).to have_content "Body can't be blank"
+        end
+      end
+
+      scenario "tries to edit other user's question" do
+        within "#question-#{someone_elses_question.id}" do
+          expect(page).to_not have_link 'Edit'
+        end
       end
     end
 
-    scenario 'edit his question with errors' do
-      within "#question-#{question.id}" do
-        click_on 'Edit'
-        fill_in 'Title', with: ''
-        fill_in 'Body', with: ''
-        click_on 'Save'
+    context 'question path' do
+      background { visit question_path(question) }
 
-        expect(page).to have_content question.title
-        expect(page).to have_content question.body
-        expect(page).to have_content "Title can't be blank"
-        expect(page).to have_content "Body can't be blank"
+      scenario 'edit his question' do
+        within "#question-#{question.id}" do
+          click_on 'Edit'
+          fill_in 'Title', with: 'New title'
+          fill_in 'Body', with: 'New body'
+          click_on 'Save'
+
+          expect(page).to have_content 'New title'
+          expect(page).to have_content 'New body'
+          expect(page).to_not have_content question.title
+          expect(page).to_not have_content question.body
+        end
+      end
+
+      scenario 'edit his question with errors' do
+        within "#question-#{question.id}" do
+          click_on 'Edit'
+          fill_in 'Title', with: ''
+          fill_in 'Body', with: ''
+          click_on 'Save'
+
+          expect(page).to have_content question.title
+          expect(page).to have_content question.body
+          expect(page).to have_content "Title can't be blank"
+          expect(page).to have_content "Body can't be blank"
+        end
       end
     end
 
-    scenario "tries to edit other user's question" do
-      within "#question-#{someone_elses_question.id}" do
-        expect(page).to_not have_link 'Edit'
+    context 'someone else question path' do
+      scenario "tries to edit other user's question" do
+        visit question_path(someone_elses_question)
+        within "#question-#{someone_elses_question.id}" do
+          expect(page).to_not have_link 'Edit'
+        end
       end
     end
   end

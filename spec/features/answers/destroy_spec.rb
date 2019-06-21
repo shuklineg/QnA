@@ -17,7 +17,7 @@ feature 'User can delete own answers', %q(
     end
 
     scenario 'tries to delete own answer' do
-      click_link 'Delete answer'
+      click_on 'Delete answer'
 
       expect(page).to_not have_content answer.body
     end
