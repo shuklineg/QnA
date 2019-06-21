@@ -52,7 +52,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq 'new body'
       end
 
-      it 'redirects to updated question' do
+      it 'render updated question' do
         patch :update, params: { id: question, question: attributes_for(:question), format: :js }
 
         expect(response).to render_template :update
@@ -68,7 +68,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq 'Question body'
       end
 
-      it 're-renders edit' do
+      it 'render updated question' do
         expect(response).to render_template :update
       end
     end
