@@ -12,12 +12,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    if current_user.author_of?(answer)
-      answer.destroy
-      redirect_to answer.question, notice: 'Your answer has been deleted.'
-    else
-      redirect_to answer.question
-    end
+    answer.destroy if current_user.author_of?(answer)
   end
 
   def update

@@ -6,24 +6,27 @@ feature 'User can delete own answers', %q(
   I'd like to be able to delete the answer
 ) do
   given(:user) { create(:user) }
-  given(:another_user) { create(:user) }
-  given(:question) { create(:question, user: user) }
+  given!(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question, user: user) }
+  given!(:someone_elses_answer) { create(:answer, :sequences, question: question) }
 
-  scenario 'Authenticated user tries to delete own answer' do
-    login(user)
-    visit question_path(question)
-    click_link 'Delete answer'
+  describe 'Authenticated user', js: true do
+    background do
+      login(user)
+      visit question_path(question)
+    end
 
-    expect(page).to have_content 'Your answer has been deleted.'
-    expect(page).to_not have_content answer.body
-  end
+    scenario 'tries to delete own answer' do
+      click_link 'Delete answer'
 
-  scenario "Authenticated user tries to delete someone else's answer" do
-    login(another_user)
-    visit question_path(question)
+      expect(page).to_not have_content answer.body
+    end
 
-    expect(page).to_not have_link('Delete answer')
+    scenario "tries to delete someone else's answer" do
+      within "#answer-#{someone_elses_answer.id}" do
+        expect(page).to_not have_link('Delete answer')
+      end
+    end
   end
 
   scenario 'Unauthenticated user tries to delete answer' do
