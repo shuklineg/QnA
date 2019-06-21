@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
-  it { should have_many(:answers).dependent(:destroy) }
+  let(:question) { create(:question) }
+
+  it { should have_many(:answers).dependent(:destroy).order(best: :desc) }
   it { should belong_to(:user) }
 
   it { should validate_presence_of :title }

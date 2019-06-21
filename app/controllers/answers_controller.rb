@@ -20,6 +20,11 @@ class AnswersController < ApplicationController
     @question = answer.question
   end
 
+  def best
+    answer.best! if current_user.author_of?(answer.question)
+    redirect_to answer.question
+  end
+
   private
 
   def answer_params

@@ -76,7 +76,7 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).to eq 'new body'
       end
 
-      it 'redirects to update view' do
+      it 'render update view' do
         patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
 
         expect(response).to render_template :update
@@ -105,6 +105,40 @@ RSpec.describe AnswersController, type: :controller do
         answer.reload
 
         expect(answer.body).to_not eq 'new body'
+      end
+    end
+  end
+
+  describe 'POST #best' do
+    context 'user is author of the question' do
+      let(:question) { create(:question, user: user) }
+      let!(:answer) { create(:answer, question: question) }
+
+      it 'can set the answer as the best' do
+        post :best, params: { id: answer }, format: :js
+        expect(answer.reload.best).to be_truthy
+      end
+
+      it 'redirects to qustion' do
+        post :best, params: { id: answer }, format: :js
+
+        expect(response).to redirect question_path(question)
+      end
+    end
+
+    context 'user is not author of the question' do
+      let(:question) { create(:question) }
+      let!(:answer) { create(:answer, question: question) }
+
+      it "can't set the answer as the best" do
+        post :best, params: { id: answer }, format: :js
+        expect(answer.reload.best).to be_falsey
+      end
+
+      it 'redirects to qustion' do
+        post :best, params: { id: answer }, format: :js
+
+        expect(response).to redirect question_path(question)
       end
     end
   end

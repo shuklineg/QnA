@@ -1,9 +1,11 @@
-div id='answer-#{answer.id}'
+div.answer id='answer-#{answer.id}'
 
   p= answer.body
   -if current_user&.author_of?(answer)
     =link_to 'Delete answer', answer, remote: true, method: :delete
     =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+  -unless answer.best
+    =link_to 'Best', best_answer_path(answer), method: :post
   
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
     div.answer-errors

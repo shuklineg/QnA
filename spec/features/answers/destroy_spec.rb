@@ -24,7 +24,7 @@ feature 'User can delete own answers', %q(
 
     scenario "tries to delete someone else's answer" do
       within "#answer-#{someone_elses_answer.id}" do
-        expect(page).to_not have_link('Delete answer')
+        expect(page).to_not have_link 'Delete answer'
       end
     end
   end
@@ -32,6 +32,6 @@ feature 'User can delete own answers', %q(
   scenario 'Unauthenticated user tries to delete answer' do
     visit question_path(question)
 
-    expect(page).to_not have_link('Delete answer')
+    expect(page).to_not have_link 'Delete answer'
   end
 end
