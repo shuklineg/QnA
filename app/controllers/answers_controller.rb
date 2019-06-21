@@ -1,7 +1,8 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
 
-  expose :question
+  helper_method :question
+
   expose :answers, from: :question
   expose :answer
 
@@ -17,15 +18,17 @@ class AnswersController < ApplicationController
 
   def update
     answer.update(answer_params) if current_user.author_of?(answer)
-    @question = answer.question
   end
 
   def best
-    @question = answer.question
-    answer.best! if current_user.author_of?(@question)
+    answer.best! if current_user.author_of?(question)
   end
 
   private
+
+  def question
+    Question.find_by(id: params[:question_id]) || answer.question
+  end
 
   def answer_params
     params.require(:answer).permit(:body)
