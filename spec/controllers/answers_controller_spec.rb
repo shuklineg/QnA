@@ -116,7 +116,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'can set the answer as the best' do
         post :best, params: { id: answer }, format: :js
-        expect(answer.reload.best).to be_truthy
+        expect(answer.reload).to be_best
       end
 
       it 'render best' do
@@ -132,7 +132,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it "can't set the answer as the best" do
         post :best, params: { id: answer }, format: :js
-        expect(answer.reload.best).to be_falsey
+        expect(answer.reload).to_not be_best
       end
 
       it 'render best' do

@@ -16,13 +16,20 @@ RSpec.describe Answer, type: :model do
 
     context 'can be only one in question' do
       let!(:best_answer) { create(:answer, question: question, best: true) }
-      let!(:second_question) { create(:question) }
-      let!(:second_question_answer) { create(:answer, question: second_question, best: true) }
+      let!(:second_question_answer) { create(:answer, best: true) }
 
       before { answer.best! }
 
-      it { expect(best_answer.reload.best).to be_falsey }
-      it { expect(second_question_answer.reload.best).to be_truthy }
+      it { expect(best_answer.reload).to_not be_best }
+      it { expect(second_question_answer.reload).to be_best }
     end
+  end
+
+  describe 'Answer#best?' do
+    let(:answer) { create(:answer) }
+    let(:best_answer) { create(:answer, best: true) }
+
+    it { expect(answer).to_not be_best }
+    it { expect(best_answer).to be_best }
   end
 end

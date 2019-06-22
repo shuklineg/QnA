@@ -7,7 +7,13 @@ class Answer < ApplicationRecord
   def best!
     return if best
 
-    Answer.where(question_id: question_id, best: true).update_all(best: false)
-    update(best: true)
+    Answer.transaction do
+      Answer.where(question_id: question_id, best: true).update_all(best: false)
+      update!(best: true)
+    end
+  end
+
+  def best?
+    best
   end
 end
