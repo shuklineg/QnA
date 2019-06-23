@@ -1,6 +1,8 @@
 div id="question-#{question.id}"
   h2=question.title
   p=question.body
+  - if question.file.attached?
+    .attached_file= link_to question.file.filename.to_s, url_for(question.file)
   - if current_user&.author_of?(question)
     =link_to 'Delete question', question, method: :delete
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
