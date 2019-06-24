@@ -4,7 +4,7 @@ class AnswersController < ApplicationController
   helper_method :question
 
   expose :answers, from: :question
-  expose :answer
+  expose :answer, scope: -> { Answer.with_attached_files }
 
   def create
     answer.question = question
