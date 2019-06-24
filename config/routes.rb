@@ -10,5 +10,9 @@ Rails.application.routes.draw do
         post :delete_file
       end
     end
+
+    member do
+      post :delete_file
+    end
   end
 end

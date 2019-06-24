@@ -25,10 +25,10 @@ class AnswersController < ApplicationController
   end
 
   def delete_file
-    if current_user.author_of?(answer)
-      @file = answer.files.find(params[:file_id])
-      @file.purge
-    end
+    return unless current_user.author_of?(answer)
+
+    @file = answer.files.find(params[:file_id])
+    @file.purge
   end
 
   private

@@ -97,15 +97,30 @@ feature 'User can edit his question', %q(
         end
       end
 
-      scenario 'add files' do
-        within "#question-#{question.id}" do
-          click_on 'Edit'
+      context 'with files' do
+        background do
+          within "#question-#{question.id}" do
+            click_on 'Edit'
 
-          attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
-          click_on 'Save'
+            attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+            click_on 'Save'
+          end
+        end
 
-          expect(page).to have_link 'rails_helper.rb'
-          expect(page).to have_link 'spec_helper.rb'
+        scenario 'add' do
+          within "#question-#{question.id}" do
+            expect(page).to have_link 'rails_helper.rb'
+            expect(page).to have_link 'spec_helper.rb'
+          end
+        end
+
+        scenario 'delete' do
+          within "#question-#{question.id}" do
+            first('.file').click_on 'Delete attachment'
+
+            expect(page).to_not have_link 'rails_helper.rb'
+            expect(page).to have_link 'spec_helper.rb'
+          end
         end
       end
     end
