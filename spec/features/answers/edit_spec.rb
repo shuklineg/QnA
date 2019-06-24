@@ -8,7 +8,8 @@ feature 'User can edit his answer', %q(
   given!(:user) { create(:user) }
   given!(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question, user: user) }
-  given!(:someone_elses_answer) { create(:answer, :sequences, question: question) }
+  given(:file) { fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
+  given!(:someone_elses_answer) { create(:answer, :sequences, question: question, files: [file]) }
 
   scenario 'Unauthenticated can not edit answer' do
     visit question_path(question)
@@ -62,8 +63,6 @@ feature 'User can edit his answer', %q(
           expect(page).to have_link 'spec_helper.rb'
         end
       end
-
-      scenario "delete other user's answer files"
     end
 
     scenario 'edit his answer with errors' do
@@ -81,6 +80,12 @@ feature 'User can edit his answer', %q(
     scenario "tries to edit other user's answer" do
       within "#answer-#{someone_elses_answer.id}" do
         expect(page).to_not have_link 'Edit'
+      end
+    end
+
+    scenario "tries to delete other user's answer file" do
+      within "#answer-#{someone_elses_answer.id}" do
+        expect(page).to_not have_link 'Delete attachmentr'
       end
     end
   end

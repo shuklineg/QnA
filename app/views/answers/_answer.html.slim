@@ -1,13 +1,13 @@
 div.answer id='answer-#{answer.id}'
 
   p= answer.body
-  - if answer.files.attached?
-    .attachments
-      - answer.files.each do |file|
-        .file id="answer-file-#{file.id}"
-          = link_to file.filename.to_s, url_for(file)
-          = link_to 'Delete attachment', delete_file_answer_path(answer, file_id: file), remote: true, method: :post
   -if current_user&.author_of?(answer)
+    - if answer.files.attached?
+      .attachments
+        - answer.files.each do |file|
+          .file id="answer-file-#{file.id}"
+            = link_to file.filename.to_s, url_for(file)
+            = link_to 'Delete attachment', delete_file_answer_path(answer, file_id: file), remote: true, method: :post
     =link_to 'Delete answer', answer, remote: true, method: :delete
     =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
   -if !answer.best? && current_user&.author_of?(question) 
