@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :answers, shallow: true, only: %i[create update destroy] do
       member do
         post :best
+        post :delete_file
       end
     end
   end

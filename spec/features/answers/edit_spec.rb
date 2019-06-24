@@ -37,16 +37,33 @@ feature 'User can edit his answer', %q(
       end
     end
 
-    scenario 'add files' do
-      within "#answer-#{answer.id}" do
-        click_on 'Edit'
+    context 'with files' do
+      background do
+        within "#answer-#{answer.id}" do
+          click_on 'Edit'
 
-        attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
-        click_on 'Save'
-
-        expect(page).to have_link 'rails_helper.rb'
-        expect(page).to have_link 'spec_helper.rb'
+          attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+          click_on 'Save'
+        end
       end
+
+      scenario 'add' do
+        within "#answer-#{answer.id}" do
+          expect(page).to have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
+      end
+
+      scenario 'delete' do
+        within "#answer-#{answer.id}" do
+          first('.attachments .file').click_on 'Delete attachment'
+
+          expect(page).to_not have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
+      end
+
+      scenario "delete other user's answer files"
     end
 
     scenario 'edit his answer with errors' do
