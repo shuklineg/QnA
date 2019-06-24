@@ -14,6 +14,10 @@ div.answer id='answer-#{answer.id}'
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
     div.answer-errors
       = render 'shared/errors', resource: answer  
-    = f.label :body
-    = f.text_area :body
+    .field
+      = f.label :body
+      = f.text_area :body
+    .field
+      = f.label :files
+      = f.file_field :files, multiple: true
     = f.submit 'Save'
