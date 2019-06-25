@@ -3,11 +3,7 @@ div id="question-#{question.id}"
   p=question.body
   - if current_user&.author_of?(question)
     - if question.files.attached?
-      .attachments
-        - question.files.each do |file|
-          .file id="question-file-#{file.id}"
-            = link_to file.filename.to_s, url_for(file)
-            = link_to 'Delete attachment', delete_file_question_path(question, file_id: file), remote: true, method: :post
+      = render 'shared/attachments', attachments: question.files
     =link_to 'Delete question', question, method: :delete
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
 

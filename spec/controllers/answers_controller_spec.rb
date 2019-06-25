@@ -142,36 +142,4 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
   end
-
-  describe 'POST #delete_file' do
-    let(:file) { fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
-
-    context 'user is author of the answer' do
-      let!(:answer) { create(:answer, files: [file], user: user) }
-
-      it 'author can remove attached file' do
-        expect { post :delete_file, params: { id: answer, file_id: answer.files.first.id }, format: :js }.to change(answer.files, :count).by(-1)
-      end
-
-      it 'render delete_file' do
-        post :delete_file, params: { id: answer, file_id: answer.files.first.id }, format: :js
-
-        expect(response).to render_template :delete_file
-      end
-    end
-
-    context 'user is not author of the answer' do
-      let!(:answer) { create(:answer, files: [file]) }
-
-      it "can't remove attached file" do
-        expect { post :delete_file, params: { id: answer, file_id: answer.files.first.id }, format: :js }.to_not change(answer.files, :count)
-      end
-
-      it 'render delete_file' do
-        post :delete_file, params: { id: answer, file_id: answer.files.first.id }, format: :js
-
-        expect(response).to render_template :delete_file
-      end
-    end
-  end
 end

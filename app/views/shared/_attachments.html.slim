@@ -1,0 +1,5 @@
+.attachments
+  - attachments.each do |attachment|
+    .file id="attachment-#{attachment.id}"
+      = link_to attachment.filename.to_s, url_for(attachment)
+      = link_to 'Delete attachment', attachment_path(attachment), remote: true, method: :delete
