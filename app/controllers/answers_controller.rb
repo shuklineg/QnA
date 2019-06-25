@@ -24,13 +24,6 @@ class AnswersController < ApplicationController
     answer.best! if current_user.author_of?(question)
   end
 
-  def delete_file
-    return unless current_user.author_of?(answer)
-
-    @file = answer.files.find(params[:file_id])
-    @file.purge
-  end
-
   private
 
   def question

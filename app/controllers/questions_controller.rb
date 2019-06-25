@@ -28,13 +28,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def delete_file
-    return unless current_user.author_of?(question)
-
-    @file = question.files.find(params[:file_id])
-    @file.purge
-  end
-
   private
 
   def question_params
