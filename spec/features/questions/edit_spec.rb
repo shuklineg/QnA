@@ -22,7 +22,7 @@ feature 'User can edit his question', %q(
         visit question_path(question)
 
         expect(page).to_not have_link 'Edit'
-      end 
+      end
     end
   end
 
