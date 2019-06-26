@@ -7,7 +7,7 @@ class AnswersController < ApplicationController
   expose :answer, scope: -> { Answer.with_attached_files }
 
   def create
-    answer.question = question
+    question.answers << answer
     answer.user = current_user
     answer.save
   end
@@ -31,6 +31,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, files: [], links_attributes: [:id, :name, :url])
   end
 end

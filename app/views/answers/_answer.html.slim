@@ -8,7 +8,9 @@ div.answer id='answer-#{answer.id}'
     =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
   -if !answer.best? && current_user&.author_of?(question) 
     =link_to 'Best', best_answer_path(answer), method: :post, remote: true
-  
+
+  = render 'shared/links', links: answer.links
+
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
     div.answer-errors
       = render 'shared/errors', resource: answer  

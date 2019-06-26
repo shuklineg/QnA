@@ -7,4 +7,5 @@
   .field
     = f.label :files
     = f.file_field :files, multiple: true, direct_upload: true
+  = render 'shared/links_form', form: f
   = f.submit 'Answer the question'

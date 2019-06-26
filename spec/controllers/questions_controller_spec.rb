@@ -36,6 +36,22 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
+  describe 'GET #new' do
+    before { get :new }
+
+    it 'assigns a new link to question' do
+      expect(controller.question.links.first).to be_a_new(Link)
+    end
+  end
+
+  describe 'GET #show' do
+    before { get :show, params: { id: question } }
+
+    it 'assigns a new link for answer' do
+      expect(controller.answer.links.first).to be_a_new(Link)
+    end
+  end
+
   describe 'PATCH #update' do
     context 'with valid attributes' do
       it 'assigns the requested question to @question' do
