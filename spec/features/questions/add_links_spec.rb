@@ -5,21 +5,40 @@ feature 'User can add links to question', %q(
   As an question's author
   I'd like to be able to add links
 ) do
-  given(:user) { create(:user) }
-  given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
+  describe 'Authentithicated user asks question', js: true do
+    given(:user) { create(:user) }
+    given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
+    given(:google_url) { 'https://www.google.com' }
 
-  scenario 'User adds link when asks question' do
-    login(user)
-    visit new_question_path
+    background do
+      login(user)
+      visit new_question_path
 
-    fill_in 'Title', with: 'Test question'
-    fill_in 'Body', with: 'question text'
+      fill_in 'Title', with: 'Test question'
+      fill_in 'Body', with: 'question text'
 
-    fill_in 'Link name', with: 'My gist'
-    fill_in 'Url', with: gist_url
+      fill_in 'Link name', with: 'My gist'
+      fill_in 'Url', with: gist_url
+    end
 
-    click_on 'Ask'
+    scenario 'with link' do
+      click_on 'Ask'
 
-    expect(page).to have_link 'My gist', href: gist_url
+      expect(page).to have_link 'My gist', href: gist_url
+    end
+
+    scenario 'with links' do
+      click_on 'Add link'
+
+      within all('.link-fields').last do
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: google_url
+      end
+
+      click_on 'Ask'
+
+      expect(page).to have_link 'My gist', href: gist_url
+      expect(page).to have_link 'Google', href: google_url
+    end
   end
 end

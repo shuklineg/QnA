@@ -32,7 +32,7 @@ feature 'User can add links to answer', %q(
     scenario 'with links' do
       click_on 'Add link'
 
-      within all('.answer-link-fields').last do
+      within all('.link-fields').last do
         fill_in 'Link name', with: 'Google'
         fill_in 'Url', with: google_url
       end
