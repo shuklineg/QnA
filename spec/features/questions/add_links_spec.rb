@@ -6,8 +6,8 @@ feature 'User can add links to question', %q(
   I'd like to be able to add links
 ) do
   given(:user) { create(:user) }
-  given(:gist_url) {'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa'}
-  
+  given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
+
   scenario 'User adds link when asks question' do
     login(user)
     visit new_question_path
