@@ -44,5 +44,17 @@ feature 'User can add links to answer', %q(
         expect(page).to have_link 'Google', href: google_url
       end
     end
+
+    scenario 'with invalid link' do
+      fill_in 'Url', with: 'invalid_url'
+
+      click_on 'Answer the question'
+
+      within '.answer-errors' do
+        expect(page).to have_content 'Links url must be a valid URL'
+      end
+
+      expect(page).to_not have_link 'My gist', href: 'invalid_url'
+    end
   end
 end
