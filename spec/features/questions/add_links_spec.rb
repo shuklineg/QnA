@@ -9,6 +9,7 @@ feature 'User can add links to question', %q(
     given(:user) { create(:user) }
     given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
     given(:google_url) { 'https://www.google.com' }
+    given(:gmail_url) { 'https://www.gmail.com' }
 
     background do
       login(user)
@@ -17,28 +18,28 @@ feature 'User can add links to question', %q(
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'question text'
 
-      fill_in 'Link name', with: 'My gist'
-      fill_in 'Url', with: gist_url
+      fill_in 'Link name', with: 'My link'
+      fill_in 'Url', with: google_url
     end
 
     scenario 'with link' do
       click_on 'Ask'
 
-      expect(page).to have_link 'My gist', href: gist_url
+      expect(page).to have_link 'My link', href: google_url
     end
 
     scenario 'with links' do
       click_on 'Add link'
 
       within all('.link-fields').last do
-        fill_in 'Link name', with: 'Google'
-        fill_in 'Url', with: google_url
+        fill_in 'Link name', with: 'Second link'
+        fill_in 'Url', with: gmail_url
       end
 
       click_on 'Ask'
 
-      expect(page).to have_link 'My gist', href: gist_url
-      expect(page).to have_link 'Google', href: google_url
+      expect(page).to have_link 'My link', href: google_url
+      expect(page).to have_link 'Second link', href: gmail_url
     end
 
     scenario 'with invalid link' do
@@ -50,7 +51,18 @@ feature 'User can add links to question', %q(
         expect(page).to have_content 'Links url must be a valid URL'
       end
 
-      expect(page).to_not have_link 'My gist', href: 'invalid_url'
+      expect(page).to_not have_link 'My link', href: 'invalid_url'
+    end
+
+    scenario 'with gist link' do
+      fill_in 'Url', with: gist_url
+
+      click_on 'Ask'
+
+      within '.question' do
+        expect(page).to have_content 'Test text'
+        expect(page).to have_content 'test.txt'
+      end
     end
   end
 end

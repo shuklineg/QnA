@@ -8,45 +8,52 @@ feature 'User can add links to answer', %q(
   describe 'Authentithicated user give answer', js: true do
     given(:user) { create(:user) }
     given(:question) { create(:question) }
-    given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
+    given(:gmail_url) { 'https://gmail.com' }
     given(:google_url) { 'https://www.google.com' }
+    given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
 
     background do
       login(user)
       visit question_path(question)
 
-      fill_in 'Body', with: 'question text'
+      within '.new-answer' do
+        fill_in 'Body', with: 'answer text'
 
-      fill_in 'Link name', with: 'My gist'
-      fill_in 'Url', with: gist_url
+        fill_in 'Link name', with: 'My link'
+        fill_in 'Url', with: gmail_url
+      end
     end
 
     scenario 'with link' do
       click_on 'Answer the question'
 
       within '.answers' do
-        expect(page).to have_link 'My gist', href: gist_url
+        expect(page).to have_link 'My link', href: gmail_url
       end
     end
 
     scenario 'with links' do
-      click_on 'Add link'
+      within '.new-answer' do
+        click_on 'Add link'
 
-      within all('.link-fields').last do
-        fill_in 'Link name', with: 'Google'
-        fill_in 'Url', with: google_url
+        within all('.link-fields').last do
+          fill_in 'Link name', with: 'Google'
+          fill_in 'Url', with: google_url
+        end
       end
 
       click_on 'Answer the question'
 
       within '.answers' do
-        expect(page).to have_link 'My gist', href: gist_url
+        expect(page).to have_link 'My link', href: gmail_url
         expect(page).to have_link 'Google', href: google_url
       end
     end
 
     scenario 'with invalid link' do
-      fill_in 'Url', with: 'invalid_url'
+      within '.new-answer' do
+        fill_in 'Url', with: 'invalid_url'
+      end
 
       click_on 'Answer the question'
 
@@ -54,7 +61,18 @@ feature 'User can add links to answer', %q(
         expect(page).to have_content 'Links url must be a valid URL'
       end
 
-      expect(page).to_not have_link 'My gist', href: 'invalid_url'
+      expect(page).to_not have_link 'My link', href: 'invalid_url'
+    end
+
+    scenario 'with gist link' do
+      fill_in 'Url', with: gist_url
+
+      click_on 'Answer the question'
+
+      within '.answers' do
+        expect(page).to have_content 'Test text'
+        expect(page).to have_content 'test.txt'
+      end
     end
   end
 end

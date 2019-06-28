@@ -1,4 +1,10 @@
 p Links:
 ul.links
   - links.each do |link|
-    li= link_to link.name, link.url
+    -if link.gist?
+      li
+        -link.gist.each do |file|
+          p= file[:name]
+          code= file[:content]
+    -else
+      li= link_to link.name, link.url
