@@ -19,11 +19,10 @@ feature 'User can edit link from the question', %q(
 
         fill_in 'Link name',	with: 'Edited link'
         fill_in 'Url',	with: 'http://new.url'
-
-        click_on 'Save'
       end
 
-      expect(page).to_not have_link 'Edited link', href: 'http://new.url'
+      click_on 'Save'
+      expect(page).to have_link 'Edited link', href: 'http://new.url'
     end
   end
 end
