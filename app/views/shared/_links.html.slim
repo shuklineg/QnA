@@ -8,4 +8,5 @@ ul.links
           code= file[:content]
       -else
         =link_to link.name, link.url
-      =link_to 'Remove link', link, method: :delete, remote: true
+      -if current_user&.author_of?(link.linkable)
+        =link_to 'Remove link', link, method: :delete, remote: true

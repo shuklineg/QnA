@@ -9,21 +9,41 @@ feature 'User can delete links from the question', %q(
     given!(:user) { create(:user) }
     given!(:question) { create(:question, user: user) }
     given!(:link) { create(:link, linkable: question) }
+    given!(:another_user_question) { create(:question) }
+    given!(:another_user_link) { create(:link, linkable: another_user_question) }
+
+    background { login(user) }
 
     scenario 'Removes the link in owned question.' do
-      login(user)
       visit question_path(question)
 
-      within '.question' do
+      within 'ul.links' do
         click_on 'Remove link'
       end
 
       expect(page).to_not have_link link.name, href: link.url
     end
 
-    scenario 'Attempts to delete the link in another question'
+    scenario 'Attempts to delete the link in another question' do
+      visit question_path(another_user_question)
+
+      within 'ul.links' do
+        expect(page).to_not have_link 'Remove link'
+      end
+    end
   end
+
   describe 'Unauthenticated user', js: true do
-    scenario 'Tries to remove link'
+    given!(:user) { create(:user) }
+    given!(:question) { create(:question, user: user) }
+    given!(:link) { create(:link, linkable: question) }
+
+    scenario 'Tries to remove link' do
+      visit question_path(question)
+
+      within 'ul.links' do
+        expect(page).to_not have_link 'Remove link'
+      end
+    end
   end
 end

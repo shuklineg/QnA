@@ -44,7 +44,7 @@ RSpec.describe AttachmentsController, type: :controller do
         expect { delete :destroy, params: { id: resource.files.first }, format: :js }.to_not change(resource.files, :count)
       end
 
-      it 'render destroy' do
+      it '401 status' do
         delete :destroy, params: { id: resource.files.first }, format: :js
 
         expect(response).to have_http_status(401)
