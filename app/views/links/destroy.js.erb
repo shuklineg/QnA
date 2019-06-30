@@ -1,0 +1,3 @@
+<% unless link.persisted? %>
+  $('#link-<%= link.id %>').remove()
+<% end %>

@@ -1,10 +1,11 @@
 p Links:
 ul.links
   - links.each do |link|
-    -if link.gist?
-      li
+    li id="link-#{link.id}"
+      -if link.gist?
         -link.gist.each do |file|
           p= file[:name]
           code= file[:content]
-    -else
-      li= link_to link.name, link.url
+      -else
+        =link_to link.name, link.url
+      =link_to 'Remove link', link, method: :delete, remote: true
