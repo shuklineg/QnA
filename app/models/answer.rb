@@ -2,6 +2,7 @@ class Answer < ApplicationRecord
   has_many :links, as: :linkable, dependent: :destroy
   belongs_to :question
   belongs_to :user
+  has_one :reward
 
   accepts_nested_attributes_for :links, reject_if: :all_blank, allow_destroy: true
 
@@ -15,6 +16,7 @@ class Answer < ApplicationRecord
     Answer.transaction do
       Answer.where(question_id: question_id, best: true).update_all(best: false)
       update!(best: true)
+      update!(reward: question.reward)
     end
   end
 
