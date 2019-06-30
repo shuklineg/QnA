@@ -10,5 +10,14 @@
   .field
     = f.label :files
     = f.file_field :files, multiple: true, direct_upload: true
+  .reward
+    p Reward
+    = f.fields_for :reward do |r|
+      .field
+        = r.label :name
+        = r.text_field :name
+      .field
+        = r.label :image
+        = r.file_field :image, direct_upload: true  
   = render 'shared/links_form', form: f
   = f.submit 'Ask'

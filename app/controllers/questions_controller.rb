@@ -12,6 +12,7 @@ class QuestionsController < ApplicationController
 
   def new
     question.links.new
+    question.build_reward
   end
 
   def create
@@ -19,6 +20,7 @@ class QuestionsController < ApplicationController
     if question.save
       redirect_to question, notice: 'Your question successfully created.'
     else
+      question.build_reward unless question.reward
       render :new
     end
   end
@@ -39,6 +41,6 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [], links_attributes: [:id, :name, :url, :_destroy])
+    params.require(:question).permit(:title, :body, files: [], links_attributes: [:id, :name, :url, :_destroy], reward_attributes: [:image, :name])
   end
 end
