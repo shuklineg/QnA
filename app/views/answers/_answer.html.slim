@@ -20,4 +20,5 @@ div.answer id='answer-#{answer.id}'
     .field
       = f.label :files
       = f.file_field :files, multiple: true, direct_upload: true
+    = render 'shared/links_form', form: f
     = f.submit 'Save'
