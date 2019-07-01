@@ -22,6 +22,8 @@ feature 'User can see their rewards', %q(
     end
 
     scenario 'user is viewing their rewards' do
+      expect(page).to have_content question.title
+      expect(page).to have_content second_question.title
       expect(page).to have_content 'first reward'
       expect(page).to have_content 'second reward'
       expect(page).to have_css "img[src*='reward.png']"
@@ -36,6 +38,8 @@ feature 'User can see their rewards', %q(
     end
 
     scenario 'user has no rewards' do
+      expect(page).to_not have_content question.title
+      expect(page).to_not have_content second_question.title
       expect(page).to_not have_content 'first reward'
       expect(page).to_not have_content 'second reward'
       expect(page).to_not have_css "img[src*='reward.png']"
