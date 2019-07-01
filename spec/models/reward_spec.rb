@@ -10,5 +10,7 @@ RSpec.describe Reward, type: :model do
 
   it 'validate image presence' do
     expect(Reward.new(name: 'reward name')).to_not be_valid
+    expect(Reward.new(name: 'reward name', image: fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain'))).to_not be_valid
+    expect(Reward.new(name: 'reward name', image: fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png'))).to be_valid
   end
 end
