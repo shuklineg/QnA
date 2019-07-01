@@ -16,10 +16,17 @@ RSpec.describe Answer, type: :model do
 
   describe 'Answer#best!' do
     let(:question) { create(:question) }
-    let(:answer) { create(:answer, question: question) }
+    let(:user) { create(:user) }
+    let(:answer) { create(:answer, question: question, user: user) }
+    let(:image) { fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png') }
+    let!(:reward) { create(:reward, question: question, image: image) }
 
     it 'set the best answer' do
       expect { answer.best! }.to change(answer, :best).to(true)
+    end
+
+    it 'add reward to user' do
+      expect { answer.best! }.to change(user.rewards, :count).by(1)
     end
 
     context 'can be only one in question' do

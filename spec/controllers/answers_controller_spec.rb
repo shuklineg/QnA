@@ -111,8 +111,8 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'POST #best' do
     context 'user is author of the question' do
-      let(:reward) { create(:reward, name: 'first reward', image: fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png')) }
-      let(:question) { create(:question, user: user, reward: reward) }
+      let(:question) { create(:question, user: user) }
+      let!(:reward) { create(:reward, question: question, name: 'first reward', image: fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png')) }
       let(:answer_author) { create(:user) }
       let!(:answer) { create(:answer, question: question, user: answer_author) }
 
@@ -122,7 +122,7 @@ RSpec.describe AnswersController, type: :controller do
       end
 
       it 'user should receive a reward' do
-        expect{ post :best, params: { id: answer }, format: :js }.to change(answer_author.rewards, :count).by(1)
+        expect { post :best, params: { id: answer }, format: :js }.to change(answer_author.rewards, :count).by(1)
       end
 
       it 'render best' do

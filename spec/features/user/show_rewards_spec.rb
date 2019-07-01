@@ -6,12 +6,14 @@ feature 'User can see their rewards', %q(
   I'd like to be see my rewards
 ) do
   given(:user) { create(:user) }
-  given(:reward) { create(:reward, name: 'first reward', image: fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png')) }
-  given(:second_reward) { create(:reward, name: 'second reward', image: fixture_file_upload("#{Rails.root}/spec/fixtures/images/second_reward.png", 'image/png'))}
-  given(:question) { create(:question, reward: reward) }
-  given(:second_question) { create(:question, reward: second_reward) }
-  given!(:answer) { create(:answer, question: question, user: user) }
-  given!(:second_answer) { create(:answer, question: second_question, user: user) }
+  given(:image) { fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png') }
+  given(:second_image) { fixture_file_upload("#{Rails.root}/spec/fixtures/images/second_reward.png", 'image/png') }
+  given(:question) { create(:question) }
+  given!(:reward) { create(:reward, question: question, name: 'first reward', image: image ) }
+  given(:second_question) { create(:question) }
+  given!(:second_reward) { create(:reward, question: second_question, name: 'second reward', image: second_image) }
+  given(:answer) { create(:answer, question: question, user: user) }
+  given(:second_answer) { create(:answer, question: second_question, user: user) }
 
   context 'With best answers' do
     background do

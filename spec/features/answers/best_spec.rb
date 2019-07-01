@@ -5,11 +5,13 @@ feature 'The author of the question can mark one answer as the best.', %q(
   As an authenticated user and question author
   I'd like to be able to mark one answer as the best
 ) do
-  given!(:user) { create(:user) }
-  given!(:question) { create(:question, user: user) }
+  given(:user) { create(:user) }
+  given(:question) { create(:question, user: user) }
+  given(:image) { fixture_file_upload("#{Rails.root}/spec/fixtures/images/reward.png", 'image/png') }
+  given!(:reward) { create(:reward, question: question, name: 'reward name', image: image) }
   given!(:answers) { create_list(:answer, 3, :sequences, question: question) }
-  given!(:answer_last) { answers.last }
-  given!(:answer_first) { answers.first }
+  given(:answer_last) { answers.last }
+  given(:answer_first) { answers.first }
 
   describe 'As authenticated user', js: true do
     before { login(user) }
@@ -41,6 +43,22 @@ feature 'The author of the question can mark one answer as the best.', %q(
       within first('.answer') do
         expect(page).to have_content answer_first.body
       end
+    end
+
+    scenario 'user gets an reward' do
+      visit question_path(question)
+
+      within "#answer-#{answer_last.id}" do
+        click_on 'Best'
+      end
+
+      visit user_rewards_path(answer_last.user)
+
+      reward = question.reward
+
+      expect(page).to have_content question.title
+      expect(page).to have_content reward.name
+      expect(page).to have_css "img[src*='#{reward.image.filename}']"
     end
   end
 

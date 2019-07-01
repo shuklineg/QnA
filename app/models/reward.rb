@@ -1,7 +1,7 @@
 class Reward < ApplicationRecord
   has_one_attached :image
   belongs_to :answer, optional: true
-  has_one :question, through: :answer
+  belongs_to :question
 
   validates :name, presence: true
   validate :attached_image
