@@ -7,6 +7,10 @@ div id="question-#{question.id}"
     =link_to 'Delete question', question, method: :delete
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
 
+  .votes
+    .votes-count= question.votes.sum(:value)
+    -if current_user
+      = link_to 'Vote up', vote_up_question_path(question), class: '.vote-up', method: :post, remote: true
   = render 'shared/links', links: question.links
 
   = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|

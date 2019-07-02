@@ -4,11 +4,15 @@ div.answer id='answer-#{answer.id}'
   -if current_user&.author_of?(answer)
     - if answer.files.attached?
       = render 'shared/attachments', attachments: answer.files
-    =link_to 'Delete answer', answer, remote: true, method: :delete
-    =link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
+    = link_to 'Delete answer', answer, remote: true, method: :delete
+    = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
   -if !answer.best? && current_user&.author_of?(question)
     =link_to 'Best', best_answer_path(answer), method: :post, remote: true
 
+  .votes
+    .votes-count= answer.votes.sum(:value)
+    -if current_user
+      = link_to 'Vote up', vote_up_answer_path(answer), class: '.vote-up', method: :post, remote: true
   = render 'shared/links', links: answer.links
 
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
