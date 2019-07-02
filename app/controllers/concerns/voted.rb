@@ -5,12 +5,8 @@ module Voted
     votable.vote_up!(current_user)
 
     respond_to do |format|
-      if votable.save
-        format.json do
-          render json: { object_id: votable.id, value: votable.votes.count, model: votable.class.name.underscore }
-        end
-      else
-        format.json { render json: {}, status: :unprocessable_entity }
+      format.json do
+        render json: { object_id: votable.id, value: votable.votes.count, model: votable.class.name.underscore }
       end
     end
   end
