@@ -9,7 +9,7 @@ div id="question-#{question.id}"
 
   .votes
     .votes-count= question.votes.sum(:value)
-    -if current_user
+    -if current_user && !current_user.author_of?(question)
       = link_to 'Vote up', vote_up_question_path(question), class: '.vote-up', method: :post, remote: true
   = render 'shared/links', links: question.links
 

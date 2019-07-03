@@ -50,6 +50,7 @@ feature 'The author of the question can mark one answer as the best.', %q(
 
       within "#answer-#{answer_last.id}" do
         click_on 'Best'
+        sleep(0.5)
       end
 
       visit user_rewards_path(answer_last.user)

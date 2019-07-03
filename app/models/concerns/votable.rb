@@ -6,8 +6,10 @@ module Votable
   end
 
   def vote_up!(user)
+    return if user.author_of? self
+
     vote = Vote.where(user: user, votable: self).first_or_initialize(user: user, votable: self)
-    vote.value = 1
+    vote.value += 1
     vote.save!
   end
 end

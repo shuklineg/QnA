@@ -10,6 +10,7 @@ feature 'User can vote for the answer', %q(
 
   describe 'Authenticated user', js: true do
     given(:user) { create(:user) }
+    given!(:owned_answer) { create(:answer, question: question, user: user) }
 
     background do
       login(user)
@@ -23,6 +24,12 @@ feature 'User can vote for the answer', %q(
       end
 
       expect(page.find("#answer-#{answer.id} .votes-count")).to have_content '1'
+    end
+
+    scenario 'tries vote for the owned answer' do
+      within "#answer-#{owned_answer.id}" do
+        expect(page).to_not have_link 'Vote up'
+      end
     end
   end
 
