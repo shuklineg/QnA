@@ -10,7 +10,7 @@ div id="question-#{question.id}"
   .votes
     -if current_user && !current_user.author_of?(question)
       = link_to 'Vote up', vote_up_question_path(question), class: '.vote-up', method: :post, remote: true
-    .votes-count= question.votes.sum(:value)
+    .votes-count= question.rating
     -if current_user && !current_user.author_of?(question)
       = link_to 'Vote down', vote_down_question_path(question), class: '.vote-down', method: :post, remote: true
 

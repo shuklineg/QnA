@@ -12,7 +12,7 @@ div.answer id='answer-#{answer.id}'
   .votes
     -if current_user && !current_user.author_of?(answer)
       = link_to 'Vote up', vote_up_answer_path(answer), class: '.vote-up', method: :post, remote: true
-    .votes-count= answer.votes.sum(:value)
+    .votes-count= answer.rating
     -if current_user && !current_user.author_of?(answer)
       = link_to 'Vote down', vote_down_answer_path(answer), class: '.vote-down', method: :post, remote: true
 

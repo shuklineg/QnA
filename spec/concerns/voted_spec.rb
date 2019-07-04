@@ -25,6 +25,14 @@ RSpec.shared_examples 'voted controller' do
           expect(json_response['object_id']).to eq voteable.id
           expect(json_response['value']).to eq 1
         end
+
+        it "can't vote twice" do
+          2.times { post :vote_up, params: { id: voteable }, format: :json }
+          json_response = JSON.parse(response.body)
+
+          expect(response.status).to eq 422
+          expect(json_response['value']).to eq ["You can't vote twice"]
+        end
       end
 
       context 'with own votable' do
@@ -36,9 +44,8 @@ RSpec.shared_examples 'voted controller' do
           post :vote_up, params: { id: owned_voteable }, format: :json
           json_response = JSON.parse(response.body)
 
-          expect(json_response['model']).to eq owned_voteable.class.name.underscore
-          expect(json_response['object_id']).to eq owned_voteable.id
-          expect(json_response['value']).to eq 0
+          expect(response.status).to eq 422
+          expect(json_response['user']).to eq ["Author can't vote"]
         end
       end
     end
@@ -76,6 +83,14 @@ RSpec.shared_examples 'voted controller' do
           expect(json_response['object_id']).to eq voteable.id
           expect(json_response['value']).to eq(-1)
         end
+
+        it "can't vote twice" do
+          2.times { post :vote_up, params: { id: voteable }, format: :json }
+          json_response = JSON.parse(response.body)
+
+          expect(response.status).to eq 422
+          expect(json_response['value']).to eq ["You can't vote twice"]
+        end
       end
 
       context 'with own votable' do
@@ -87,9 +102,8 @@ RSpec.shared_examples 'voted controller' do
           post :vote_down, params: { id: owned_voteable }, format: :json
           json_response = JSON.parse(response.body)
 
-          expect(json_response['model']).to eq owned_voteable.class.name.underscore
-          expect(json_response['object_id']).to eq owned_voteable.id
-          expect(json_response['value']).to eq 0
+          expect(response.status).to eq 422
+          expect(json_response['user']).to eq ["Author can't vote"]
         end
       end
     end

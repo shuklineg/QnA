@@ -11,11 +11,11 @@ RSpec.shared_examples 'votable model' do
   describe '#rating' do
     it do
       expect(votable.rating).to eq(0)
-      Vote.vote_down(user, votable).save
+      Vote.vote_down(create(:user), votable).save
       expect(votable.rating).to eq(-1)
-      Vote.vote_up(user, votable).save
+      Vote.vote_up(create(:user), votable).save
       expect(votable.rating).to eq(0)
-      Vote.vote_up(user, votable).save
+      Vote.vote_up(create(:user), votable).save
       expect(votable.rating).to eq(1)
     end
   end

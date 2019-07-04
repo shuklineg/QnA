@@ -21,6 +21,20 @@ RSpec.describe Vote, type: :model do
       it do
         expect { described_class.vote_up(user, votable).save }.to change(votable, :rating).by(1)
       end
+    end
+
+    context 'owned votable' do
+      let(:votable) { create(:answer, user: user) }
+
+      it { expect { described_class.vote_up(user, votable).save }.to_not change(votable, :rating) }
+    end
+  end
+
+  describe '#vote_down' do
+    let(:user) { create(:user) }
+
+    context 'someone elses votable' do
+      let(:votable) { create(:answer) }
 
       it do
         expect { described_class.vote_down(user, votable).save }.to change(votable, :rating).by(-1)
@@ -30,7 +44,7 @@ RSpec.describe Vote, type: :model do
     context 'owned votable' do
       let(:votable) { create(:answer, user: user) }
 
-      it { expect { described_class.vote_up(user, votable).save }.to_not change(votable, :rating) }
+      it { expect { described_class.vote_down(user, votable).save }.to_not change(votable, :rating) }
     end
   end
 end

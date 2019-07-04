@@ -20,9 +20,8 @@ feature 'User can vote for the question', %q(
       within "#question-#{question.id}" do
         expect(page.find('.votes-count')).to have_content '0'
         click_on 'Vote up'
+        expect(page.find('.votes-count')).to have_content '1'
       end
-
-      expect(page.find("#question-#{question.id} .votes-count")).to have_content '1'
     end
 
     scenario 'tries vote for the owned question' do
@@ -37,8 +36,36 @@ feature 'User can vote for the question', %q(
       within "#question-#{question.id}" do
         expect(page.find('.votes-count')).to have_content '0'
         click_on 'Vote down'
+        expect(page.find('.votes-count')).to have_content '-1'
       end
-      expect(page.find("#question-#{question.id} .votes-count")).to have_content '-1'
+    end
+
+    scenario 'change vote' do
+      within "#question-#{question.id}" do
+        click_on 'Vote down'
+        expect(page.find('.votes-count')).to have_content '-1'
+        click_on 'Vote up'
+        expect(page.find('.votes-count')).to have_content '0'
+        click_on 'Vote up'
+        expect(page.find('.votes-count')).to have_content '1'
+      end
+    end
+
+    scenario "can't vote twice" do
+      within "#question-#{question.id}" do
+        click_on 'Vote down'
+        click_on 'Vote down'
+      end
+      expect(page).to have_content "You can't vote twice"
+    end
+
+    scenario 'can see rate' do
+      create_list(:vote, 3, user: create(:user), value: 1, votable: question)
+
+      within "#question-#{question.id}" do
+        click_on 'Vote up'
+        expect(page.find('.votes-count')).to have_content '4'
+      end
     end
   end
 
