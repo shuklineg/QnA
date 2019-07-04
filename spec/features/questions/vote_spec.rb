@@ -9,7 +9,7 @@ feature 'User can vote for the question', %q(
 
   describe 'Authenticated user', js: true do
     given(:user) { create(:user) }
-    given!(:owned_answer) { create(:question, user: user) }
+    given!(:owned_question) { create(:question, user: user) }
 
     background do
       login(user)
@@ -26,15 +26,25 @@ feature 'User can vote for the question', %q(
     end
 
     scenario 'tries vote for the owned question' do
-      visit question_path(owned_answer)
-      within "#question-#{owned_answer.id}" do
+      visit question_path(owned_question)
+      within "#question-#{owned_question.id}" do
         expect(page).to_not have_link 'Vote up'
+        expect(page).to_not have_link 'Vote down'
       end
+    end
+
+    scenario 'can vote down for the answer' do
+      within "#question-#{question.id}" do
+        expect(page.find('.votes-count')).to have_content '0'
+        click_on 'Vote down'
+      end
+      expect(page.find("#question-#{question.id} .votes-count")).to have_content '-1'
     end
   end
 
   scenario "Unauthenticated user can't vote for the question" do
     visit question_path(question)
     expect(page).to_not have_link 'Vote up'
+    expect(page).to_not have_link 'Vote down'
   end
 end

@@ -10,9 +10,12 @@ div.answer id='answer-#{answer.id}'
     =link_to 'Best', best_answer_path(answer), method: :post, remote: true
 
   .votes
-    .votes-count= answer.votes.sum(:value)
     -if current_user && !current_user.author_of?(answer)
       = link_to 'Vote up', vote_up_answer_path(answer), class: '.vote-up', method: :post, remote: true
+    .votes-count= answer.votes.sum(:value)
+    -if current_user && !current_user.author_of?(answer)
+      = link_to 'Vote down', vote_down_answer_path(answer), class: '.vote-down', method: :post, remote: true
+
   = render 'shared/links', links: answer.links
 
   = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|

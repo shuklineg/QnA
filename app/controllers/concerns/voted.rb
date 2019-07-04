@@ -6,7 +6,17 @@ module Voted
 
     respond_to do |format|
       format.json do
-        render json: { object_id: votable.id, value: votable.votes.count, model: votable.class.name.underscore }
+        render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
+      end
+    end
+  end
+
+  def vote_down
+    votable.vote_down!(current_user)
+
+    respond_to do |format|
+      format.json do
+        render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
       end
     end
   end

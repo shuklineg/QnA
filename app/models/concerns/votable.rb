@@ -11,5 +11,19 @@ module Votable
     vote = Vote.where(user: user, votable: self).first_or_initialize(user: user, votable: self)
     vote.value += 1
     vote.save!
+    vote
+  end
+
+  def vote_down!(user)
+    return if user.author_of? self
+
+    vote = Vote.where(user: user, votable: self).first_or_initialize(user: user, votable: self)
+    vote.value -= 1
+    vote.save!
+    vote
+  end
+
+  def rating
+    votes.sum(:value)
   end
 end
