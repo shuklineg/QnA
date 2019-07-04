@@ -2,8 +2,8 @@ module Voted
   extend ActiveSupport::Concern
 
   def vote_up
-    votable.vote_up!(current_user)
-
+    vote = Vote.vote_up(current_user, votable)
+    vote.save
     respond_to do |format|
       format.json do
         render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
@@ -12,8 +12,8 @@ module Voted
   end
 
   def vote_down
-    votable.vote_down!(current_user)
-
+    vote = Vote.vote_down(current_user, votable)
+    vote.save
     respond_to do |format|
       format.json do
         render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
