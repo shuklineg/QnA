@@ -2,21 +2,30 @@ class Vote < ApplicationRecord
   belongs_to :user
   belongs_to :votable, polymorphic: true
 
-  validates :value, numericality: { greater_than_or_equal_to: -1, less_than_or_equal_to: 1, only_integer: true, message: "You can't vote twice" }
+  validates :value, inclusion: { in: [-1, 1], message: "You can't vote twice" }
 
   validate :author_cant_vote
 
   def self.vote_up(user, votable)
-    vote = Vote.where(user: user, votable: votable).first_or_initialize(user: user, votable: votable)
+    vote = Vote.where(user: user, votable: votable).find_or_initialize_by(user: user, votable: votable)
     vote.value += 1
-    vote
+    destroy_if_revote(vote)
   end
 
   def self.vote_down(user, votable)
-    vote = Vote.where(user: user, votable: votable).first_or_initialize(user: user, votable: votable)
+    vote = Vote.where(user: user, votable: votable).find_or_initialize_by(user: user, votable: votable)
     vote.value -= 1
-    vote
+    destroy_if_revote(vote)
   end
+
+  def self.destroy_if_revote(vote)
+    return vote unless vote.value.zero?
+
+    vote.destroy
+    nil
+  end
+
+  private_class_method :destroy_if_revote
 
   private
 

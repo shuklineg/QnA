@@ -9,14 +9,9 @@ RSpec.shared_examples 'votable model' do
   it { should have_many(:votes).dependent(:destroy) }
 
   describe '#rating' do
-    it do
-      expect(votable.rating).to eq(0)
-      Vote.vote_down(create(:user), votable).save
-      expect(votable.rating).to eq(-1)
-      Vote.vote_up(create(:user), votable).save
-      expect(votable.rating).to eq(0)
-      Vote.vote_up(create(:user), votable).save
-      expect(votable.rating).to eq(1)
-    end
+    let!(:votes_up) { create_list(:vote, 10, user: create(:user), votable: votable, value: 1) }
+    let!(:votes_down) { create_list(:vote, 3, user: create(:user), votable: votable, value: -1) }
+
+    it { expect(votable.rating).to eq 7 }
   end
 end

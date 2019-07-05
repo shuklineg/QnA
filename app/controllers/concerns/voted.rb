@@ -5,7 +5,7 @@ module Voted
     vote = Vote.vote_up(current_user, votable)
     respond_to do |format|
       format.json do
-        if vote.save
+        if vote.nil? || vote.save
           render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
         else
           render json: vote.errors, status: :unprocessable_entity
@@ -18,7 +18,7 @@ module Voted
     vote = Vote.vote_down(current_user, votable)
     respond_to do |format|
       format.json do
-        if vote.save
+        if vote.nil? || vote.save
           render json: { object_id: votable.id, value: votable.rating, model: votable.class.name.underscore }
         else
           render json: vote.errors, status: :unprocessable_entity
