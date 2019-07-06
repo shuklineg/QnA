@@ -8,8 +8,7 @@ $(document).on 'turbolinks:load', ->
 App.cable.subscriptions.create 'QuestionsChannel',
   connected: ->
     @perform 'follow'
-    console.log('connected')
   ,
   received: (data) ->
-    $('.questions').append data
-    console.log('recieved')
+    question = JSON.parse(data)
+    $('.questions').append JST["templates/question"]( { question: question } )

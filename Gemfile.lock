@@ -108,6 +108,10 @@ GEM
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    gon (6.2.1)
+      actionpack (>= 3.0)
+      multi_json
+      request_store (>= 1.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     jbuilder (2.9.1)
@@ -136,6 +140,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.11.3)
     msgpack (1.2.10)
+    multi_json (1.13.1)
     multipart-post (2.1.0)
     nio4r (2.3.1)
     nokogiri (1.10.3)
@@ -182,6 +187,8 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     regexp_parser (1.4.0)
+    request_store (1.4.1)
+      rack (>= 1.4)
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
@@ -223,6 +230,11 @@ GEM
       rubyzip (~> 1.2, >= 1.2.2)
     shoulda-matchers (4.1.0)
       activesupport (>= 4.2.0)
+    skim (0.10.0)
+      coffee-script
+      coffee-script-source (>= 1.2.0)
+      slim (>= 3.0)
+      sprockets (>= 2, < 4)
     slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
@@ -279,6 +291,7 @@ DEPENDENCIES
   decent_exposure (= 3.0.0)
   devise
   factory_bot_rails
+  gon
   jbuilder (~> 2.5)
   jquery-rails
   launchy
@@ -292,6 +305,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   selenium-webdriver
   shoulda-matchers
+  skim
   slim-rails
   spring
   spring-watcher-listen (~> 2.0.0)
