@@ -7,7 +7,6 @@ div id="question-#{@question.id}"
         a href="#{file.url}" #{file.name}
   - if current_user.author_of(@question)
     a href="/questions/#{@question.id}" data-method='delete' Delete question
-    a href='/questions/#' class='edit-question-link' data-remote='true' data-question_id="#{@question.id}" Edit
   div.votes
     - if current_user.id && !current_user.author_of(@question)
       a href="/questions/#{@question.id}/vote_up" class='.vote-up' data-method='post' data-remote='true' Vote up

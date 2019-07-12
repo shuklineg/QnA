@@ -1,0 +1,21 @@
+div.answer id="answer-#{@answer.id}"
+  p #{@answer.body}
+  .attachments
+    - @files.forEach (file) ->
+      .file id="attachment-#{file.id}"
+        a href="#{file.url}" #{file.name}
+  - if current_user.author_of(@answer)
+    a href="/answers/#{@answer.id}" data-method='delete' data-remote='true' rel='nofollow' Delete answer
+  div.votes
+    - if current_user.id && !current_user.author_of(@answer)
+      a href="/answers/#{@answer.id}/vote_up" class='.vote-up' data-method='post' data-remote='true' Vote up
+    div.votes-count 0
+    - if current_user.id && !current_user.author_of(@answer)
+      a href="/answers/#{@answer.id}/vote_down" class='.vote-down' data-method='post' data-remote='true' Vote down
+
+  p Links:
+  ul.links
+    - @links.forEach (link) ->
+      li id="link-#{link.id}"
+        a href="#{{link.url}}"
+          == link.name

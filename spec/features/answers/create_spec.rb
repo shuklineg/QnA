@@ -41,6 +41,60 @@ feature 'User can create answer', %q(
     end
   end
 
+  context 'multiple sessioins', js: true do
+    given(:another_user) { create(:user) }
+    given(:google_url) { 'https://www.google.com' }
+    given!(:question) { create(:question) }
+    given(:answer) { Answer.last }
+
+    scenario "question appears on another user's page" do
+      Capybara.using_session('user') do
+        login(user)
+        visit question_path(question)
+      end
+
+      Capybara.using_session('guest') do
+        visit question_path(question)
+      end
+
+      Capybara.using_session('another_user') do
+        login(another_user)
+        visit question_path(question)
+      end
+
+      Capybara.using_session('user') do
+        within '.new-answer' do
+          fill_in 'Body', with: 'Answer text'
+
+          fill_in 'Link name', with: 'My link'
+          fill_in 'Url', with: google_url
+
+          click_on 'Answer the question'
+        end
+
+        expect(page).to have_content 'Answer text'
+      end
+
+      Capybara.using_session('guest') do
+        within '.answers' do
+          expect(page).to have_content 'Answer text'
+          expect(page).to have_link 'My link', href: google_url
+          expect(page).to_not have_link 'Vote up', href: vote_up_answer_path(answer)
+          expect(page).to_not have_link 'Vote down', href: vote_down_answer_path(answer)
+        end
+      end
+
+      Capybara.using_session('another_user') do
+        within '.answers' do
+          expect(page).to have_content 'Answer text'
+          expect(page).to have_link 'My link', href: google_url
+          expect(page).to have_link 'Vote up', href: vote_up_answer_path(answer)
+          expect(page).to have_link 'Vote down', href: vote_down_answer_path(answer)
+        end
+      end
+    end
+  end
+
   scenario 'Unauthenticated user tries to answer the question' do
     visit question_path(question)
     click_on 'Answer the question'
