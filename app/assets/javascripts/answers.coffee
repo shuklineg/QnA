@@ -20,12 +20,11 @@ $(document).on 'turbolinks:load', ->
         $('#notice').append '<p>' + value + '</p>'
   )
 
-  $('.question').each ->
-    questionId = $(this).data 'questionId'
-    if questionId
-      App.cable.subscriptions.create { channel: 'AnswersChannel', id: questionId },
-      connected: ->
-        @perform 'follow'
-      ,
-      received: (data) ->
-        $('.answers').append JST["templates/answer"]( { answer: data.answer, links: data.links, files: data.files } )
+  questionId = $('.question').data 'questionId'
+  if questionId
+    App.cable.subscriptions.create { channel: 'AnswersChannel', id: questionId },
+    connected: ->
+      @perform 'follow'
+    ,
+    received: (data) ->
+      $('.answers').append JST["templates/answer"]( { answer: data.answer, links: data.links, files: data.files } )

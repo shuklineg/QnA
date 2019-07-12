@@ -5,9 +5,10 @@ $(document).on 'turbolinks:load', ->
     questionId = $(this).data 'questionId'
     $('form#edit-question-' + questionId).removeClass 'hidden'
 
-App.cable.subscriptions.create 'QuestionsChannel',
-  connected: ->
-    @perform 'follow'
-  ,
-  received: (data) ->
-    $('.questions').append JST["templates/question"]( { question: data.question, links: data.links, files: data.files } )
+  if $('.questions').length
+    App.cable.subscriptions.create 'QuestionsChannel',
+      connected: ->
+        @perform 'follow'
+      ,
+      received: (data) ->
+        $('.questions').append JST["templates/question"]( { question: data.question, links: data.links, files: data.files } )
