@@ -1,9 +1,9 @@
 div.answer id='answer-#{answer.id}'
 
   p= answer.body
+  - if answer.files.attached?
+    = render 'shared/attachments', attachments: answer.files, resource: answer
   -if current_user&.author_of?(answer)
-    - if answer.files.attached?
-      = render 'shared/attachments', attachments: answer.files
     = link_to 'Delete answer', answer, remote: true, method: :delete
     = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
   -if !answer.best? && current_user&.author_of?(question)

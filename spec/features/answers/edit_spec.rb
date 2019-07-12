@@ -57,6 +57,7 @@ feature 'User can edit his answer', %q(
 
       scenario 'delete' do
         within "#answer-#{answer.id}" do
+
           first('.attachments .file').click_on 'Delete attachment'
 
           expect(page).to_not have_link 'rails_helper.rb'

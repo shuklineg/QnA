@@ -48,7 +48,9 @@ class QuestionsController < ApplicationController
 
     ActionCable.server.broadcast(
       'questions',
-      ApplicationController.render(json: question)
+      question: question,
+      links: question.links,
+      files: question.files.map { |file| { id: file.id, name: file.filename.to_s, url: url_for(file) } }
     )
   end
 

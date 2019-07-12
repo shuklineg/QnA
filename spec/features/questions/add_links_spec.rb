@@ -65,4 +65,18 @@ feature 'User can add links to question', %q(
       end
     end
   end
+
+  context 'Unauthentithicated user', js: true do
+    given!(:question) { create(:question) }
+    given(:gmail_url) { 'https://gmail.com' }
+    given!(:link) { create(:link, linkable: question, name: 'My link', url: gmail_url) }
+
+    scenario 'can see links' do
+      visit question_path(question)
+
+      within '.question' do
+        expect(page).to have_link 'My link', href: gmail_url
+      end
+    end
+  end
 end

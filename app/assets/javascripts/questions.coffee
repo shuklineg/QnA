@@ -10,5 +10,4 @@ App.cable.subscriptions.create 'QuestionsChannel',
     @perform 'follow'
   ,
   received: (data) ->
-    question = JSON.parse(data)
-    $('.questions').append JST["templates/question"]( { question: question } )
+    $('.questions').append JST["templates/question"]( { question: data.question, links: data.links, files: data.files } )

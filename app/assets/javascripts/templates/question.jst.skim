@@ -1,3 +1,23 @@
-div id="question-#{@question['id']}"
+div id="question-#{@question.id}"
   h2 #{@question.title}
   p #{@question.body}
+  .attachments
+    - @files.forEach (file) ->
+      .file id="attachment-#{file.id}"
+        a href="#{file.url}" #{file.name}
+  - if current_user.author_of(@question)
+    a href="/questions/#{@question.id}" data-method='delete' Delete question
+    a href='/questions/#' class='edit-question-link' data-remote='true' data-question_id="#{@question.id}" Edit
+  div.votes
+    - if current_user.id && !current_user.author_of(@question)
+      a href="/questions/#{@question.id}/vote_up" class='.vote-up' data-method='post' data-remote='true' Vote up
+    div.votes-count 0
+    - if current_user.id && !current_user.author_of(@question)
+      a href="/questions/#{@question.id}/vote_down" class='.vote-down' data-method='post' data-remote='true' Vote down
+
+  p Links:
+  ul.links
+    - @links.forEach (link) ->
+      li id="link-#{link.id}"
+        a href="#{{link.url}}"
+          == link.name

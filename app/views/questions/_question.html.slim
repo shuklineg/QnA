@@ -1,9 +1,9 @@
 div id="question-#{question.id}"
   h2=question.title
   p=question.body
+  - if question.files.attached?
+    = render 'shared/attachments', attachments: question.files, resource: question
   - if current_user&.author_of?(question)
-    - if question.files.attached?
-      = render 'shared/attachments', attachments: question.files
     =link_to 'Delete question', question, method: :delete
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
 

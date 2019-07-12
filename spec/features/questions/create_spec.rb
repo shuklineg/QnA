@@ -43,6 +43,10 @@ feature 'User can create question', %q(
   end
 
   context 'multiple sessioins', js: true do
+    given(:another_user) { create(:user) }
+    given(:google_url) { 'https://www.google.com' }
+    given(:question) { Question.last }
+
     scenario "question appears on another user's page" do
       Capybara.using_session('user') do
         login(user)
@@ -53,10 +57,20 @@ feature 'User can create question', %q(
         visit questions_path
       end
 
+      Capybara.using_session('another_user') do
+        login(another_user)
+        visit questions_path
+      end
+
       Capybara.using_session('user') do
         click_on 'Ask question'
+
         fill_in 'Title', with: 'Test question'
         fill_in 'Body', with: 'question text'
+
+        fill_in 'Link name', with: 'My link'
+        fill_in 'Url', with: google_url
+
         click_on 'Ask'
 
         expect(page).to have_content 'Test question'
@@ -66,6 +80,18 @@ feature 'User can create question', %q(
       Capybara.using_session('guest') do
         expect(page).to have_content 'Test question'
         expect(page).to have_content 'question text'
+        expect(page).to have_link 'My link', href: google_url
+        expect(page).to_not have_link 'Vote up', href: vote_up_question_path(question)
+        expect(page).to_not have_link 'Vote down', href: vote_down_question_path(question)
+      end
+
+      Capybara.using_session('another_user') do
+        expect(page).to have_content 'Test question'
+        expect(page).to have_content 'question text'
+
+        expect(page).to have_link 'My link', href: google_url
+        expect(page).to have_link 'Vote up', href: vote_up_question_path(question)
+        expect(page).to have_link 'Vote down', href: vote_down_question_path(question)
       end
     end
   end
