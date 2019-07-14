@@ -72,7 +72,7 @@ feature 'User can create answer', %q(
           click_on 'Answer the question'
         end
 
-        expect(page).to have_content 'Answer text'
+        expect(page).to have_content 'Answer text', count: 1
       end
 
       Capybara.using_session('guest') do

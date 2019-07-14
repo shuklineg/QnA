@@ -29,3 +29,5 @@ div.answer id='answer-#{answer.id}'
       = f.file_field :files, multiple: true, direct_upload: true
     = render 'shared/links_form', form: f
     = f.submit 'Save'
+  = render 'shared/comments', commentable: answer
+  

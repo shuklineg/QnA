@@ -1,0 +1,9 @@
+var commentable = '<%= "#{@resource}-#{@resource_id}" %>'
+$('#' + commentable + ' .comment-errors').html('<%= render "shared/errors", resource: comment %>')
+
+<%- if comment.persisted? %>
+  $('#' + commentable + ' .comments').append('<%= j render comment %>')
+  $('#comment-form-' + commentable + ' #comment_body').val('')
+  $('a.add-comment-link[data-commentable="' + commentable + '"]').show()
+  $('form#comment-form-' + commentable).addClass('hidden')
+<% end %>

@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
   expose :question, scope: -> { Question.with_attached_files }
   expose :answers, from: :question
   expose :answer, -> { Answer.new }
+  expose :comment, -> { question.comments.new }
 
   def show
     answer.links.new

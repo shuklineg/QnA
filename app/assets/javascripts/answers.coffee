@@ -27,4 +27,5 @@ $(document).on 'turbolinks:load', ->
       @perform 'follow'
     ,
     received: (data) ->
-      $('.answers').append JST["templates/answer"]( { answer: data.answer, links: data.links, files: data.files } )
+      if current_user.id != data.answer.user_id
+        $('.answers').append JST["templates/answer"]( { answer: data.answer, links: data.links, files: data.files } )
