@@ -47,7 +47,7 @@ feature 'User can create answer', %q(
     given!(:question) { create(:question) }
     given(:answer) { Answer.last }
 
-    scenario "question appears on another user's page" do
+    scenario "answer appears on another user's page" do
       Capybara.using_session('user') do
         login(user)
         visit question_path(question)

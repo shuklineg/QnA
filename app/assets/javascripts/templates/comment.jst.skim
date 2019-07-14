@@ -1,0 +1,3 @@
+.comment id="comment-#{@comment.id}"
+  .user #{@user.email}
+  .body #{@comment.body}
