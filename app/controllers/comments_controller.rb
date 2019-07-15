@@ -16,7 +16,7 @@ class CommentsController < ApplicationController
   def set_commentable
     @resource, @resource_id = request.path.split('/')[1, 2]
     @resource = @resource.singularize
-    @commentable = @resource.singularize.classify.constantize.find(@resource_id)
+    @commentable = @resource.classify.constantize.find(@resource_id)
   end
 
   def comment_params
@@ -26,8 +26,10 @@ class CommentsController < ApplicationController
   def publish_comment
     return if comment.errors.any?
 
+    question_id = @commentable.class == Question ? @commentable.id : @commentable.question_id
+
     ActionCable.server.broadcast(
-      "comments-#{comment.commentable_type.underscore}-#{comment.commentable_id}",
+      "comments-question-#{question_id}",
       comment: comment,
       user: comment.user
     )
