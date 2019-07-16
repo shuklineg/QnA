@@ -263,6 +263,10 @@ Devise.setup do |config|
                   Rails.application.credentials[Rails.env.to_sym][:github][:app_id],
                   Rails.application.credentials[Rails.env.to_sym][:github][:app_secret],
                   scope: 'user:email, read:user'
+  config.omniauth :vkontakte,
+                  Rails.application.credentials[Rails.env.to_sym][:vk][:app_id],
+                  Rails.application.credentials[Rails.env.to_sym][:vk][:app_secret],
+                  scope: 'user:email, read:user'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
