@@ -64,6 +64,13 @@ RSpec.describe Services::FindForOauth do
         expect(authorization.uid).to eq auth.uid
       end
     end
+
+    context 'provider does not return email' do
+      let!(:auth) { OmniAuth::AuthHash.new(provider: 'some_provider', uid: '123456' ) }
+
+      it 'return nil' do
+        expect(subject.call).to be_nil
+      end
+    end
   end
 end
-
