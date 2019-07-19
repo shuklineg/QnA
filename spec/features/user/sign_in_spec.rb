@@ -30,8 +30,8 @@ feature 'User can sign in', %q(
 
     mock_auth :vkontakte
     click_on 'Sign in with Vkontakte'
-    fill_in 'email', with: 'new@user.com'
-    click_on 'save'
+    fill_in 'Email', with: 'new@user.com'
+    click_on 'Sign up'
     expect(page).to have_content 'A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.'
 
     open_email 'new@user.com'

@@ -1,7 +1,15 @@
 Rails.application.routes.draw do
   root to: 'questions#index'
 
-  devise_for :users, controllers: { omniauth_callbacks: 'oauth_callbacks' }
+  devise_scope :user do
+    get 'users/registration/auth', to: 'users/registrations#new_auth'
+    post 'users/registration/auth', to: 'users/registrations#create_auth'
+  end
+
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'oauth_callbacks',
+    registrations: 'users/registrations'
+  }
 
   resources :users do
     resources :rewards, only: %i[index]

@@ -1,0 +1,7 @@
+= form_for(@user, url: users_registration_auth_path, method: :post) do |f|
+  div.errors
+    = render 'shared/errors', resource: @user
+  .field
+    = f.label :email, 'Email'
+    = f.text_field :email
+  = f.submit 'Sign up'
