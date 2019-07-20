@@ -18,6 +18,8 @@ class AuthorizationsController < ApplicationController
     end
   end
 
+  def email_confirmation; end
+
   private
 
   def filter_session
