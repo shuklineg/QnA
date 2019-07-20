@@ -13,10 +13,10 @@ class OauthCallbacksController < Devise::OmniauthCallbacksController
   def vkontakte
     if @user.nil? && @auth&.uid
       session[:omniauth] = @auth
-      redirect_to users_registration_auth_path
+      redirect_to new_authorization_path
     elsif @user&.persisted?
       sign_in_and_redirect @user, event: :authentication
-      set_flash_message(:notice, :success, kind: 'Github') if is_navigational_format?
+      set_flash_message(:notice, :success, kind: 'Vkontakte') if is_navigational_format?
     else
       redirect_to root_path, alert: 'Something went wrong'
     end

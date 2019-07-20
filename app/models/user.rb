@@ -22,4 +22,11 @@ class User < ApplicationRecord
   def create_authorization(auth)
     authorizations&.create(provider: auth.provider, uid: auth.uid)
   end
+
+  def generate_password
+    new_password = Devise.friendly_token
+    self.password = new_password
+    self.password_confirmation = new_password
+    self
+  end
 end

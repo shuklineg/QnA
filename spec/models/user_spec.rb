@@ -20,7 +20,7 @@ RSpec.describe User, type: :model do
     it { expect(user).to_not be_author_of(nil) }
   end
 
-  describe '.create_authorization' do
+  describe '#create_authorization' do
     let!(:user) { create(:user) }
     let!(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456') }
 
@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.find_for_oauth' do
+  describe '#find_for_oauth' do
     let!(:user) { create(:user) }
     let!(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456') }
     let(:service) { double('Service::FindForOauth') }
@@ -42,6 +42,26 @@ RSpec.describe User, type: :model do
       expect(Services::FindForOauth).to receive(:new).with(auth).and_return(service)
       expect(service).to receive(:call)
       User.find_for_oauth(auth)
+    end
+  end
+
+  describe '#generate_password' do
+    let(:user) { User.new(email: 'user@email.com') }
+
+    it 'generate password' do
+      expect { user.generate_password }.to change(user, :password)
+    end
+
+    context 'when password generated' do
+      before { user.generate_password }
+
+      it 'password not empty' do
+        expect(user.password).to_not be_empty
+      end
+
+      it 'password eq password confirmation' do
+        expect(user.password).to eq user.password_confirmation
+      end
     end
   end
 end

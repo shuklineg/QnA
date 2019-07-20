@@ -65,7 +65,7 @@ RSpec.describe OauthCallbacksController, type: :controller do
       it 'redirect to create a user if the user is not registered' do
         get :vkontakte
 
-        expect(response).to redirect_to users_registration_auth_path
+        expect(response).to redirect_to new_authorization_path
       end
 
       it 'saves auth in session' do

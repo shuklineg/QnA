@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
-class Users::RegistrationsController < Devise::RegistrationsController
-  before_action :filter_session, only: %i[new_auth create_auth]
+class AuthorizationsController < ApplicationController
+  before_action :filter_session, only: %i[new create]
+  before_action :find_user, only: %i[create]
 
-  def new_auth
+  def new
     @user = User.new
   end
 
-  def create_auth
-    password = Devise.friendly_token[0, 20]
-    @user = User.create(sign_up_params.merge(password: password, password_confirmation: password))
-    if @user.errors.any?
-      render :new_auth
+  def create
+    if @user.new_record? && !@user.generate_password.save
+      render :new
     else
       @user.create_authorization(OmniAuth::AuthHash.new(session[:omniauth]))
       session.delete(:omniauth)
@@ -23,5 +22,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def filter_session
     redirect_to root_path unless session[:omniauth]
+  end
+
+  def find_user
+    @user = User.find_or_create_by(email: authorization_params[:email])
+  end
+
+  def authorization_params
+    params.require(:user).permit(:email)
   end
 end

@@ -1,4 +1,4 @@
-= form_for(@user, url: users_registration_auth_path, method: :post) do |f|
+= form_for(@user, url: authorization_path, method: :post) do |f|
   div.errors
     = render 'shared/errors', resource: @user
   .field
