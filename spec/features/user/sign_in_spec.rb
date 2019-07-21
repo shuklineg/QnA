@@ -39,6 +39,24 @@ feature 'User can sign in', %q(
     expect(page).to have_content 'Your email address has been successfully confirmed.'
   end
 
+  scenario 'User tries to sign up with oauth vkontakte twice' do
+    expect(page).to have_content 'Sign in with Vkontakte'
+
+    mock_auth :vkontakte
+    click_on 'Sign in with Vkontakte'
+    fill_in 'Email', with: 'new@user.com'
+    click_on 'Sign up'
+
+    visit new_user_session_path
+    click_on 'Sign in with Vkontakte'
+    fill_in 'Email', with: 'anower@user.com'
+    click_on 'Sign up'
+
+    open_email 'anower@user.com'
+    current_email.click_link 'Confirm my account'
+    expect(page).to have_content 'Your email address has been successfully confirmed.'
+  end
+
   scenario 'User tries to sign up with oauth github' do
     expect(page).to have_content 'Sign in with GitHub'
 

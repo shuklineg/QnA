@@ -13,7 +13,7 @@ RSpec.describe AuthorizationsMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.body.encoded).to have_link('Confirm my account', href: email_confirmation_authorization_url(token: authorization.confirmation_token))
+      expect(mail.body.encoded).to have_link('Confirm my account', href: email_confirmation_authorization_url(confirmation_token: authorization.confirmation_token))
     end
   end
 end

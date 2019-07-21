@@ -51,43 +51,75 @@ RSpec.describe OauthCallbacksController, type: :controller do
   describe 'Vkontakte' do
     let(:oauth_data) { OmniAuth::AuthHash.new({ 'provider' => 'vkontakte', 'uid' => '123' }) }
 
-    context 'recive data oauth data' do
+    context 'when recieve oauth data' do
       before do
         allow(request.env).to receive(:[]).and_call_original
         allow(request.env).to receive(:[]).with('omniauth.auth').and_return(oauth_data)
       end
 
-      it 'finds user from' do
+      it 'finds user from oauth data' do
         expect(User).to receive(:find_for_oauth).with(oauth_data)
         get :vkontakte
       end
 
-      it 'redirect to create a user if the user is not registered' do
-        get :vkontakte
-
-        expect(response).to redirect_to new_authorization_path
-      end
-
       it 'saves auth in session' do
         get :vkontakte
-        set_session[:omniauth].to(oauth_data)
+        should set_session[:omniauth].to(oauth_data)
       end
     end
 
-    context 'user exists' do
+    context 'without authorization' do
+      let!(:user) { create(:user) }
+
+      before do
+        allow(request.env).to receive(:[]).and_call_original
+        allow(request.env).to receive(:[]).with('omniauth.auth').and_return(oauth_data)
+      end
+
+      it 'redirect to email confirmation path' do
+        get :vkontakte
+        expect(response).to redirect_to new_authorization_path
+      end
+
+      it 'not login user' do
+        expect(subject.current_user).to be_nil
+      end
+    end
+
+    context 'with unconfirmed email' do
+      let!(:user) { create(:user) }
+
+      before do
+        allow(request.env).to receive(:[]).and_call_original
+        allow(request.env).to receive(:[]).with('omniauth.auth').and_return(oauth_data)
+        user.create_unconfirmed_authorization(oauth_data)
+        get :vkontakte
+      end
+
+      it 'redirect to email confirmation path' do
+        expect(response).to redirect_to new_authorization_path
+      end
+
+      it 'not login user' do
+        expect(subject.current_user).to be_nil
+      end
+    end
+
+    context 'with confirmed email' do
       let!(:user) { create(:user) }
 
       before do
         allow(User).to receive(:find_for_oauth).and_return(user)
+        user.create_authorization(oauth_data)
         get :vkontakte
+      end
+
+      it 'redirect to root path' do
+        expect(response).to redirect_to root_path
       end
 
       it 'login user' do
         expect(subject.current_user).to eq user
-      end
-
-      it 'redirects to root path' do
-        expect(response).to redirect_to root_path
       end
     end
 

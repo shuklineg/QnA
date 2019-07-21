@@ -11,7 +11,7 @@ class OauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def vkontakte
-    if @user.nil? && @auth&.uid
+    if @auth&.uid && !@user&.auth_confirmed?(@auth)
       session[:omniauth] = @auth
       redirect_to new_authorization_path
     elsif @user&.persisted?

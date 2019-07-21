@@ -2,4 +2,4 @@ p Welcome #{@email}
 
 p You can confirm your account email through the link below:
 
-p #{ link_to 'Confirm my account', email_confirmation_authorization_url(token: @token) }
+p #{ link_to 'Confirm my account', email_confirmation_authorization_url(confirmation_token: @token) }

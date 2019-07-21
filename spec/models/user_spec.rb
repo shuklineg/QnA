@@ -31,6 +31,10 @@ RSpec.describe User, type: :model do
     it 'create the authorization' do
       expect { user.create_authorization(auth) }.to change(user.authorizations, :count).by(1)
     end
+
+    it 'does not generate token' do
+      expect(user.create_authorization(auth).confirmation_token).to be_nil
+    end
   end
 
   describe '#find_for_oauth' do
@@ -62,6 +66,38 @@ RSpec.describe User, type: :model do
       it 'password eq password confirmation' do
         expect(user.password).to eq user.password_confirmation
       end
+    end
+  end
+
+  describe '#create_unconfirmed_authorization' do
+    let!(:user) { create(:user) }
+    let!(:auth) { OmniAuth::AuthHash.new(provider: 'some_provider', uid: '123456') }
+
+    it 'returns the authorization' do
+      expect(user.create_unconfirmed_authorization(auth)).to be_a(Authorization)
+    end
+
+    it 'create the authorization' do
+      expect { user.create_unconfirmed_authorization(auth) }.to change(user.authorizations, :count).by(1)
+    end
+
+    it 'generate token' do
+      expect(user.create_unconfirmed_authorization(auth).confirmation_token).to_not be_nil
+    end
+  end
+
+  describe '#auth_confirmed' do
+    let(:user) { create(:user) }
+    let(:auth) { OmniAuth::AuthHash.new(provider: 'some_provider', uid: '123456') }
+    let!(:authorization) { create(:authorization, user: user, uid: auth.uid, provider: auth.provider, confirmation_token: '1234') }
+
+    it 'auth not confirmed' do
+      expect(user).to_not be_auth_confirmed(auth)
+    end
+
+    it 'auth confirmed' do
+      authorization.confirm!
+      expect(user).to be_auth_confirmed(auth)
     end
   end
 end

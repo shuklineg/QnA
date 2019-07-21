@@ -23,10 +23,18 @@ class User < ApplicationRecord
     authorizations&.create(provider: auth.provider, uid: auth.uid)
   end
 
+  def create_unconfirmed_authorization(auth)
+    authorizations&.create(provider: auth.provider, uid: auth.uid, confirmation_token: Devise.friendly_token)
+  end
+
   def generate_password
     new_password = Devise.friendly_token
     self.password = new_password
     self.password_confirmation = new_password
     self
+  end
+
+  def auth_confirmed?(auth)
+    auth && authorizations.find_by(uid: auth.uid, provider: auth.provider)&.confirmed?
   end
 end
