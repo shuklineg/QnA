@@ -36,7 +36,7 @@ class AuthorizationsController < ApplicationController
   end
 
   def find_user
-    @user = User.find_or_create_by(email: authorization_params[:email])
+    @user = User.find_or_initialize_by(email: authorization_params[:email])
   end
 
   def authorization_params
