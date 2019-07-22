@@ -20,17 +20,16 @@ class User < ApplicationRecord
   end
 
   def create_authorization(auth)
-    authorizations&.create(provider: auth.provider, uid: auth.uid)
+    authorizations.create(provider: auth.provider, uid: auth.uid)
   end
 
   def create_unconfirmed_authorization(auth)
-    authorizations&.create(provider: auth.provider, uid: auth.uid, confirmation_token: Devise.friendly_token)
+    authorizations.create(provider: auth.provider, uid: auth.uid, confirmation_token: Devise.friendly_token)
   end
 
   def generate_password
     new_password = Devise.friendly_token
-    self.password = new_password
-    self.password_confirmation = new_password
+    self.password = self.password_confirmation = new_password
     self
   end
 
