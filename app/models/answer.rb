@@ -22,8 +22,4 @@ class Answer < ApplicationRecord
       update!(reward: question.reward) if question.reward
     end
   end
-
-  def best?
-    best
-  end
 end

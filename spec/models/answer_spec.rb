@@ -42,12 +42,4 @@ RSpec.describe Answer, type: :model do
       it { expect(second_question_answer.reload).to be_best }
     end
   end
-
-  describe 'Answer#best?' do
-    let(:answer) { create(:answer) }
-    let(:best_answer) { create(:answer, best: true) }
-
-    it { expect(answer).to_not be_best }
-    it { expect(best_answer).to be_best }
-  end
 end
