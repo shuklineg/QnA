@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
   expose :comment
 
   def create
+    authorize! :create, Comment
     @commentable.comments << comment
     comment.user = current_user
     comment.save

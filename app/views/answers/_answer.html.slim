@@ -3,17 +3,18 @@ div.answer id='answer-#{answer.id}'
   p= answer.body
   - if answer.files.attached?
     = render 'shared/attachments', attachments: answer.files, resource: answer
-  -if current_user&.author_of?(answer)
+  -if can? :destroy, answer
     = link_to 'Delete answer', answer, remote: true, method: :delete
+  -if can? :update, answer
     = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
-  -if !answer.best? && current_user&.author_of?(question)
+  -if !answer.best? && can?(:best, answer)
     =link_to 'Best', best_answer_path(answer), method: :post, remote: true
 
   .votes
-    -if current_user && !current_user.author_of?(answer)
+    -if can? :vote_up, answer
       = link_to 'Vote up', vote_up_answer_path(answer), class: '.vote-up', method: :post, remote: true
     .votes-count= answer.rating
-    -if current_user && !current_user.author_of?(answer)
+    -if can? :vote_down, answer
       = link_to 'Vote down', vote_down_answer_path(answer), class: '.vote-down', method: :post, remote: true
 
   = render 'shared/links', links: answer.links

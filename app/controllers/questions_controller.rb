@@ -11,15 +11,18 @@ class QuestionsController < ApplicationController
   expose :comment, -> { question.comments.new }
 
   def show
+    authorize! :read, question
     answer.links.new
   end
 
   def new
+    authorize! :create, Question
     question.links.new
     question.build_reward
   end
 
   def create
+    authorize! :create, Question
     question.user = current_user
     if question.save
       redirect_to question, notice: 'Your question successfully created.'
@@ -30,16 +33,14 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    question.update(question_params) if current_user.author_of?(question)
+    authorize! :update, question
+    question.update(question_params)
   end
 
   def destroy
-    if current_user.author_of?(question)
-      question.destroy
-      redirect_to questions_path, notice: 'Your question has been deleted.'
-    else
-      redirect_to question
-    end
+    authorize! :destroy, question
+    question.destroy
+    redirect_to questions_path, notice: 'Your question has been deleted.'
   end
 
   private

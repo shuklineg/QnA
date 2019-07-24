@@ -11,21 +11,25 @@ class AnswersController < ApplicationController
   expose :comment, -> { answer.comments.new }
 
   def create
+    authorize! :create, Answer
     question.answers << answer
     answer.user = current_user
     answer.save
   end
 
   def destroy
-    answer.destroy if current_user.author_of?(answer)
+    authorize! :destroy, answer
+    answer.destroy
   end
 
   def update
-    answer.update(answer_params) if current_user.author_of?(answer)
+    authorize! :update, answer
+    answer.update(answer_params)
   end
 
   def best
-    answer.best! if current_user.author_of?(question)
+    authorize! :best, answer
+    answer.best!
   end
 
   private

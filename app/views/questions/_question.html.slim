@@ -1,17 +1,18 @@
 div id="question-#{question.id}"
   h2=question.title
   p=question.body
-  - if question.files.attached?
+  -if question.files.attached?
     = render 'shared/attachments', attachments: question.files, resource: question
-  - if current_user&.author_of?(question)
+  -if can? :destroy, question
     =link_to 'Delete question', question, method: :delete
+  -if can? :update, question
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
 
   .votes
-    -if current_user && !current_user.author_of?(question)
+    -if can? :vote_up, question
       = link_to 'Vote up', vote_up_question_path(question), class: '.vote-up', method: :post, remote: true
     .votes-count= question.rating
-    -if current_user && !current_user.author_of?(question)
+    -if can? :vote_down, question
       = link_to 'Vote down', vote_down_question_path(question), class: '.vote-down', method: :post, remote: true
 
   = render 'shared/links', links: question.links
