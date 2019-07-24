@@ -2,6 +2,7 @@ module Voted
   extend ActiveSupport::Concern
 
   def vote_up
+    authorize! :vote_up, votable
     vote = Vote.vote_up(current_user, votable)
     respond_to do |format|
       format.json do
@@ -15,6 +16,7 @@ module Voted
   end
 
   def vote_down
+    authorize! :vote_down, votable
     vote = Vote.vote_down(current_user, votable)
     respond_to do |format|
       format.json do
