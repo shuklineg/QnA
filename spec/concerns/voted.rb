@@ -1,6 +1,4 @@
-require 'rails_helper'
-
-RSpec.shared_examples 'voted controller' do
+shared_examples 'voted controller' do
   let(:model_klass) { described_class.controller_name.singularize.to_sym }
   let!(:voteable) { create(model_klass) }
   let(:user) { create(:user) }
