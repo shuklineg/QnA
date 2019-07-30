@@ -42,7 +42,7 @@ RSpec.describe CommentsController, type: :controller do
           end
 
           it 'render create' do
-            post :create, params: { comment:  { body: '' }, question_id: question }, format: :js
+            post :create, params: { comment: { body: '' }, question_id: question }, format: :js
 
             expect(response).to render_template :create
           end
@@ -50,11 +50,11 @@ RSpec.describe CommentsController, type: :controller do
 
         context 'answer' do
           it "user can't add comment" do
-            expect { post :create, params: { comment:  { body: '' }, answer_id: answer }, format: :js }.to_not change(answer.comments, :count)
+            expect { post :create, params: { comment: { body: '' }, answer_id: answer }, format: :js }.to_not change(answer.comments, :count)
           end
 
           it 'render create' do
-            post :create, params: { comment:  { body: '' }, question_id: question }, format: :js
+            post :create, params: { comment: { body: '' }, question_id: question }, format: :js
 
             expect(response).to render_template :create
           end
