@@ -6,7 +6,7 @@ RSpec.describe Question, type: :model do
   it_behaves_like 'votable model'
   it_behaves_like 'commentable model'
 
-  it { should have_many(:answers).dependent(:destroy).order(best: :desc) }
+  it { should have_many(:answers).dependent(:destroy).order(best: :desc, id: :asc) }
   it { should have_many(:links).dependent(:destroy) }
   it { should have_one(:reward).dependent(:destroy) }
   it { should belong_to(:user) }

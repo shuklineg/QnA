@@ -20,7 +20,7 @@ describe 'Questions API', type: :request do
       before { get api_path, params: { access_token: access_token.token }, headers: headers }
 
       it 'returns list of questions' do
-        expect(json['questions'].size).to eq 2
+        expect(json['questions'].size).to eq questions.count
       end
 
       it 'returns all public fields' do
@@ -46,7 +46,7 @@ describe 'Questions API', type: :request do
         end
 
         it 'returns all public fields' do
-          %w[id body user_id created_at updated_at].each do |attr|
+          %w[id body created_at updated_at].each do |attr|
             expect(answer_response[attr]).to eq answer.send(attr).as_json
           end
         end

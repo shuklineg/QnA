@@ -1,13 +1,14 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
+  expose :questions, -> { Question.all }
+  expose :question, scope: -> { Question.with_attached_files }
+
   def index
     authorize! :index, Question
-    @questions = Question.all
-    render json: @questions, each_serializer: BaseQuestionSerializer
+    render json: questions, each_serializer: BaseQuestionSerializer
   end
 
   def show
-    @question = Question.with_attached_files.find(params[:id])
-    render json: @question
-    authorize! :read, @question
+    authorize! :read, question
+    render json: question
   end
 end
