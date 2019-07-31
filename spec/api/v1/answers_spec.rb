@@ -24,7 +24,7 @@ describe 'Answers API', type: :request do
       end
 
       it 'returns all public fields' do
-        %w[id body created_at updated_at].each do |attr|
+        %w[id body created_at updated_at best].each do |attr|
           expect(answer_response[attr]).to eq answer.send(attr).as_json
         end
       end
@@ -50,7 +50,7 @@ describe 'Answers API', type: :request do
       let!(:comments) { create_list(:comment, 5, commentable: answer) }
       let!(:links) { create_list(:link, 4, linkable: answer) }
 
-      before { get api_path, params: { access_token: access_token.token, id: answer }, headers: headers }
+      before { get api_path, params: { access_token: access_token.token }, headers: headers }
 
       it 'returns all public fields' do
         %w[id body created_at updated_at].each do |attr|
@@ -107,6 +107,142 @@ describe 'Answers API', type: :request do
 
         it 'returns path' do
           expect(file_response['path']).to eq path
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/answers/:id' do
+    let!(:answer) { create(:answer, user_id: access_token.resource_owner_id) }
+    let(:api_path) { api_v1_answer_path(answer) }
+
+    context 'unauthorized' do
+      it 'returns 401 status if there is no access_token' do
+        delete api_path, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it 'returns 401 status if access_token is invalid' do
+        delete api_path, params: { access_token: '1234' }.to_json, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it "dosn't delete the answer" do
+        expect { delete api_path, headers: headers }.to_not change(Answer, :count)
+      end
+    end
+
+    context 'authorized' do
+      let(:params) { { access_token: access_token.token }.to_json }
+
+      it 'deletes the answer' do
+        expect { delete api_path, params: params, headers: headers }.to change(Answer, :count).by(-1)
+      end
+
+      it 'returns 200 status' do
+        delete api_path, params: params, headers: headers
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  describe 'POST /api/v1/questions' do
+    let!(:question) { create(:question) }
+    let(:api_path) { api_v1_question_answers_path(question) }
+
+    context 'unauthorized' do
+      it 'returns 401 status if there is no access_token' do
+        post api_path, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it 'returns 401 status if access_token is invalid' do
+        post api_path, params: { access_token: '1234' }.to_json, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it "dosn't create the answer" do
+        expect { post api_path, headers: headers }.to_not change(Answer, :count)
+      end
+    end
+
+    context 'authorized' do
+      context 'with valid params' do
+        let(:answer_params) { build(:answer) }
+        let(:params) { { access_token: access_token.token, answer: answer_params }.to_json }
+
+        it 'create the answer' do
+          expect { post api_path, params: params, headers: headers }.to change(Answer, :count).by(1)
+        end
+
+        it 'returns 200 status' do
+          post api_path, params: params, headers: headers
+          expect(response).to be_successful
+        end
+      end
+
+      context 'with invalid params' do
+        let(:answer_params) { { body: '' } }
+        let(:params) { { access_token: access_token.token, answer: answer_params }.to_json }
+
+        it "doesn't create the answer" do
+          expect { post api_path, params: params, headers: headers }.to_not change(Answer, :count)
+        end
+
+        it 'returns 422 status' do
+          post api_path, params: params, headers: headers
+          expect(response.status).to eq 422
+        end
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/answers/:id' do
+    let!(:answer) { create(:answer, user_id: access_token.resource_owner_id) }
+    let(:answer_params) { { body: 'new body' } }
+    let(:api_path) { api_v1_answer_path(answer) }
+
+    context 'unauthorized' do
+      it 'returns 401 status if there is no access_token' do
+        put api_path, params: { answer: answer_params }.to_json, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it 'returns 401 status if access_token is invalid' do
+        put api_path, params: { answer: answer_params, access_token: '1234' }.to_json, headers: headers
+        expect(response.status).to eq 401
+      end
+
+      it "dosn't update the answer" do
+        expect { put api_path, params: { answer: answer_params }.to_json, headers: headers }.to_not change { answer.reload.body }
+      end
+    end
+
+    context 'authorized' do
+      context 'with valid params' do
+        let(:params) { { access_token: access_token.token, answer: answer_params }.to_json }
+
+        it 'update the answer' do
+          expect { put api_path, params: params, headers: headers }.to change { answer.reload.body }.to(answer_params[:body])
+        end
+
+        it 'returns 200 status' do
+          put api_path, params: params, headers: headers
+          expect(response).to be_successful
+        end
+      end
+
+      context 'with invalid params' do
+        let(:answer_params) { { body: '' } }
+        let(:params) { { access_token: access_token.token, answer: answer_params }.to_json }
+
+        it "doesn't update the answer" do
+          expect { put api_path, params: params, headers: headers }.to_not change { answer.reload.body }
+        end
+
+        it 'returns 422 status' do
+          put api_path, params: params, headers: headers
+          expect(response.status).to eq 422
         end
       end
     end
