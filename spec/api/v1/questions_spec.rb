@@ -19,6 +19,10 @@ describe 'Questions API', type: :request do
 
       before { get api_path, params: { access_token: access_token.token }, headers: headers }
 
+      it 'returns 200 status' do
+        expect(response).to be_successful
+      end
+
       it 'returns list of questions' do
         expect(json['questions'].size).to eq questions.count
       end
@@ -58,6 +62,7 @@ describe 'Questions API', type: :request do
     let(:file) { fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
     let(:second_file) { fixture_file_upload("#{Rails.root}/spec/spec_helper.rb", 'text/plain') }
     let!(:question) { create(:question, files: [file, second_file]) }
+    let!(:comments) { create_list(:comment, 5, commentable: question) }
     let(:api_path) { api_v1_question_path(question) }
 
     it_behaves_like 'API Authorizable' do
@@ -66,10 +71,13 @@ describe 'Questions API', type: :request do
 
     context 'authorized' do
       let(:question_response) { json['question'] }
-      let!(:comments) { create_list(:comment, 5, commentable: question) }
       let!(:links) { create_list(:link, 4, linkable: question) }
 
       before { get api_path, params: { access_token: access_token.token }, headers: headers }
+
+      it 'returns 200 status' do
+        expect(response).to be_successful
+      end
 
       it 'returns all public fields' do
         %w[id title body created_at updated_at].each do |attr|
@@ -77,56 +85,13 @@ describe 'Questions API', type: :request do
         end
       end
 
-      describe 'comments' do
-        let(:comments_response) { question_response['comments'].first }
-        let(:comment) { comments.first }
+      context 'with resources' do
+        let(:resource_response) { question_response }
+        let(:files) { question.files }
 
-        it 'returns list of comments' do
-          expect(question_response['comments'].size).to eq comments.count
-        end
-
-        it 'returns all public fields' do
-          %w[id body user_id created_at updated_at].each do |attr|
-            expect(comments_response[attr]).to eq comment.send(attr).as_json
-          end
-        end
-      end
-
-      describe 'links' do
-        let(:links_response) { question_response['links'].first }
-        let(:link) { links.first }
-
-        it 'returns list of links' do
-          expect(question_response['links'].size).to eq links.count
-        end
-
-        it 'returns all public fields' do
-          %w[id name url created_at updated_at].each do |attr|
-            expect(links_response[attr]).to eq link.send(attr).as_json
-          end
-        end
-      end
-
-      describe 'files' do
-        let(:file_response) { question_response['files'].first }
-        let(:first_file) { question.files.first }
-        let(:path) { rails_blob_path(first_file, disposition: 'attachment', only_path: true) }
-
-        it 'returns list of files' do
-          expect(question_response['files'].count).to eq question.files.count
-        end
-
-        it 'returns id' do
-          expect(file_response['id']).to eq first_file.id
-        end
-
-        it 'returns filename' do
-          expect(file_response['file_name']).to eq first_file.filename.to_s
-        end
-
-        it 'returns path' do
-          expect(file_response['path']).to eq path
-        end
+        it_behaves_like 'API Commentable'
+        it_behaves_like 'API Linkable'
+        it_behaves_like 'API Attachable'
       end
     end
   end
@@ -135,31 +100,19 @@ describe 'Questions API', type: :request do
     let!(:question) { create(:question, user_id: access_token.resource_owner_id) }
     let(:api_path) { api_v1_question_path(question) }
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        delete api_path, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it 'returns 401 status if access_token is invalid' do
-        delete api_path, params: { access_token: '1234' }.to_json, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it "dosn't delete the question" do
-        expect { delete api_path, headers: headers }.to_not change(Question, :count)
-      end
+    it_behaves_like 'API Authorizable' do
+      let(:method) { :delete }
     end
 
     context 'authorized' do
-      let(:params) { { access_token: access_token.token }.to_json }
+      let(:params) { { access_token: access_token.token } }
 
       it 'deletes the question' do
-        expect { delete api_path, params: params, headers: headers }.to change(Question, :count).by(-1)
+        expect { delete api_path, params: params.to_json, headers: headers }.to change(Question, :count).by(-1)
       end
 
       it 'returns 200 status' do
-        delete api_path, params: params, headers: headers
+        delete api_path, params: params.to_json, headers: headers
         expect(response).to be_successful
       end
     end
@@ -167,115 +120,52 @@ describe 'Questions API', type: :request do
 
   describe 'POST /api/v1/questions' do
     let(:api_path) { api_v1_questions_path }
+    let(:valid_params) { { question: build(:question), access_token: access_token.token } }
+    let(:invalid_params) { { question: { title: '', body: '' }, access_token: access_token.token } }
+    let(:method) { :post }
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        post api_path, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it 'returns 401 status if access_token is invalid' do
-        post api_path, params: { access_token: '1234' }.to_json, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it "dosn't create the question" do
-        expect { post api_path, headers: headers }.to_not change(Question, :count)
-      end
-    end
+    it_behaves_like 'API Validatable'
+    it_behaves_like 'API Authorizable'
 
     context 'authorized' do
-      context 'with valid params' do
-        let(:question_params) { build(:question) }
-        let(:params) { { access_token: access_token.token, question: question_params }.to_json }
-
-        it 'create the question' do
-          expect { post api_path, params: params, headers: headers }.to change(Question, :count).by(1)
-        end
-
-        it 'returns 200 status' do
-          post api_path, params: params, headers: headers
-          expect(response).to be_successful
-        end
+      it 'with valid params create the question' do
+        expect { post api_path, params: valid_params.to_json, headers: headers }.to change(Question, :count).by(1)
       end
 
-      context 'with invalid params' do
-        let(:question_params) { { title: '', body: '' } }
-        let(:params) { { access_token: access_token.token, question: question_params }.to_json }
-
-        it "doesn't create the question" do
-          expect { post api_path, params: params, headers: headers }.to_not change(Question, :count)
-        end
-
-        it 'returns 422 status' do
-          post api_path, params: params, headers: headers
-          expect(response.status).to eq 422
-        end
+      it "with invalid params doesn't create the question" do
+        expect { post api_path, params: invalid_params.to_json, headers: headers }.to_not change(Question, :count)
       end
     end
   end
 
   describe 'PUT /api/v1/questions/:id' do
     let!(:question) { create(:question, user_id: access_token.resource_owner_id) }
-    let(:question_params) { { title: 'new title', body: 'new body' } }
+    let(:valid_params) { { question: { title: 'new title', body: 'new body' }, access_token: access_token.token } }
+    let(:invalid_params) { { question: { title: '', body: '' }, access_token: access_token.token } }
     let(:api_path) { api_v1_question_path(question) }
+    let(:method) { :put }
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        put api_path, params: { question: question_params }.to_json, headers: headers
-        expect(response.status).to eq 401
-      end
+    it_behaves_like 'API Validatable'
+    it_behaves_like 'API Authorizable'
 
-      it 'returns 401 status if access_token is invalid' do
-        put api_path, params: { question: question_params, access_token: '1234' }.to_json, headers: headers
-        expect(response.status).to eq 401
-      end
-
-      it "dosn't update the question" do
-        put api_path, params: { question: question_params }.to_json, headers: headers
+    context 'authorized' do
+      it 'with valid params update the question' do
+        put api_path, params: valid_params.to_json, headers: headers
 
         question.reload
 
-        expect(question.title).to_not eq question_params[:title]
-        expect(question.body).to_not eq question_params[:body]
-      end
-    end
-
-    context 'authorized' do
-      context 'with valid params' do
-        let(:params) { { access_token: access_token.token, question: question_params }.to_json }
-
-        it 'update the question' do
-          put api_path, params: params, headers: headers
-
-          question.reload
-
-          expect(question.title).to eq question_params[:title]
-          expect(question.body).to eq question_params[:body]
-        end
-
-        it 'returns 200 status' do
-          put api_path, params: params, headers: headers
-          expect(response).to be_successful
+        %i[title body].each do |attr|
+          expect(question.send(attr)).to eq valid_params[:question][attr]
         end
       end
 
-      context 'with invalid params' do
-        let(:question_params) { { title: '', body: '' } }
-        let(:params) { { access_token: access_token.token, question: question_params }.to_json }
+      it "with invalid params doesn't update the question" do
+        put api_path, params: invalid_params.to_json, headers: headers
 
-        it "doesn't update the question" do
-          put api_path, params: params, headers: headers
+        question.reload
 
-          question.reload
-
-          expect(question.title).to_not eq question_params[:title]
-          expect(question.body).to_not eq question_params[:body]
-        end
-
-        it 'returns 422 status' do
-          put api_path, params: params, headers: headers
-          expect(response.status).to eq 422
+        %i[title body].each do |attr|
+          expect(question.send(attr)).to_not eq invalid_params[:question][attr]
         end
       end
     end
