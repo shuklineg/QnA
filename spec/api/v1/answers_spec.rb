@@ -3,6 +3,8 @@ require 'rails_helper'
 describe 'Answers API', type: :request do
   let(:headers) { { 'CONTENT_TYPE' => 'application/json', 'ACCEPT' => 'application/json' } }
   let(:access_token) { create(:access_token) }
+  let(:valid_params) { { answer: attributes_for(:answer), access_token: access_token.token } }
+  let(:invalid_params) { { answer: attributes_for(:answer, :invalid), access_token: access_token.token } }
 
   describe 'GET /api/v1/questions/:question_id/answers' do
     let(:question) { create(:question) }
@@ -101,15 +103,14 @@ describe 'Answers API', type: :request do
 
   describe 'POST /api/v1/answers' do
     let(:question) { create(:question) }
-    let(:valid_params) { { answer: { body: 'new body' }, access_token: access_token.token } }
-    let(:invalid_params) { { answer: { body: '' }, access_token: access_token.token } }
     let(:api_path) { api_v1_question_answers_path(question) }
     let(:method) { :post }
 
-    it_behaves_like 'API Validatable'
     it_behaves_like 'API Authorizable'
 
     context 'authorized' do
+      it_behaves_like 'API Validatable'
+
       it 'with valid params create the answer' do
         expect { post api_path, params: valid_params.to_json, headers: headers }.to change(Answer, :count).by(1)
       end
@@ -122,15 +123,14 @@ describe 'Answers API', type: :request do
 
   describe 'PUT /api/v1/answers/:id' do
     let!(:answer) { create(:answer, user_id: access_token.resource_owner_id) }
-    let(:valid_params) { { answer: { body: 'new body' }, access_token: access_token.token } }
-    let(:invalid_params) { { answer: { body: '' }, access_token: access_token.token } }
     let(:api_path) { api_v1_answer_path(answer) }
     let(:method) { :put }
 
-    it_behaves_like 'API Validatable'
     it_behaves_like 'API Authorizable'
 
     context 'authorized' do
+      it_behaves_like 'API Validatable'
+
       it 'with valid params update the answer' do
         put api_path, params: valid_params.to_json, headers: headers
 

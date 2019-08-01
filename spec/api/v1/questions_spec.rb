@@ -3,6 +3,8 @@ require 'rails_helper'
 describe 'Questions API', type: :request do
   let(:headers) { { 'CONTENT_TYPE' => 'application/json', 'ACCEPT' => 'application/json' } }
   let(:access_token) { create(:access_token) }
+  let(:valid_params) { { question: attributes_for(:question), access_token: access_token.token } }
+  let(:invalid_params) { { question: attributes_for(:question, :invalid), access_token: access_token.token } }
 
   describe 'GET /api/v1/questions' do
     let(:api_path) { '/api/v1/questions' }
@@ -62,7 +64,6 @@ describe 'Questions API', type: :request do
     let(:file) { fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
     let(:second_file) { fixture_file_upload("#{Rails.root}/spec/spec_helper.rb", 'text/plain') }
     let!(:question) { create(:question, files: [file, second_file]) }
-    let!(:comments) { create_list(:comment, 5, commentable: question) }
     let(:api_path) { api_v1_question_path(question) }
 
     it_behaves_like 'API Authorizable' do
@@ -71,6 +72,7 @@ describe 'Questions API', type: :request do
 
     context 'authorized' do
       let(:question_response) { json['question'] }
+      let!(:comments) { create_list(:comment, 5, commentable: question) }
       let!(:links) { create_list(:link, 4, linkable: question) }
 
       before { get api_path, params: { access_token: access_token.token }, headers: headers }
@@ -120,14 +122,13 @@ describe 'Questions API', type: :request do
 
   describe 'POST /api/v1/questions' do
     let(:api_path) { api_v1_questions_path }
-    let(:valid_params) { { question: build(:question), access_token: access_token.token } }
-    let(:invalid_params) { { question: { title: '', body: '' }, access_token: access_token.token } }
     let(:method) { :post }
 
-    it_behaves_like 'API Validatable'
     it_behaves_like 'API Authorizable'
 
     context 'authorized' do
+      it_behaves_like 'API Validatable'
+
       it 'with valid params create the question' do
         expect { post api_path, params: valid_params.to_json, headers: headers }.to change(Question, :count).by(1)
       end
@@ -140,15 +141,14 @@ describe 'Questions API', type: :request do
 
   describe 'PUT /api/v1/questions/:id' do
     let!(:question) { create(:question, user_id: access_token.resource_owner_id) }
-    let(:valid_params) { { question: { title: 'new title', body: 'new body' }, access_token: access_token.token } }
-    let(:invalid_params) { { question: { title: '', body: '' }, access_token: access_token.token } }
     let(:api_path) { api_v1_question_path(question) }
     let(:method) { :put }
 
-    it_behaves_like 'API Validatable'
     it_behaves_like 'API Authorizable'
 
     context 'authorized' do
+      it_behaves_like 'API Validatable'
+
       it 'with valid params update the question' do
         put api_path, params: valid_params.to_json, headers: headers
 

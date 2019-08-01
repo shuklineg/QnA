@@ -6,6 +6,7 @@ FactoryBot.define do
 
     trait :invalid do
       title { nil }
+      body { nil }
     end
 
     trait :sequences do
