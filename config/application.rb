@@ -30,6 +30,9 @@ module QnA
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # Sidekiq
+    config.active_job.queue_adapter = :sidekiq
+
     config.autoload_paths += [config.root.join('app')]
 
     config.generators do |g|
