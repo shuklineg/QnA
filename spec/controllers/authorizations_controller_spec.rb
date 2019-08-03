@@ -57,7 +57,7 @@ RSpec.describe AuthorizationsController, type: :controller do
 
         it 'sends email' do
           delivery = double
-          expect(delivery).to receive(:deliver_now)
+          expect(delivery).to receive(:deliver_later)
 
           expect(AuthorizationsMailer).to receive(:email_confirmation).and_return(delivery)
 

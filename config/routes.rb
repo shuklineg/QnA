@@ -35,6 +35,11 @@ Rails.application.routes.draw do
         post :best
       end
     end
+
+    member do
+      post :subscribe
+      post :unsubscribe
+    end
   end
 
   resources :attachments, only: :destroy

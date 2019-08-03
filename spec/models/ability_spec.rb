@@ -63,5 +63,6 @@ describe Ability, type: :model do
     it { should be_able_to :vote_down, other_user_question }
     it { should_not be_able_to :vote_up, answer }
     it { should_not be_able_to :vote_down, question }
+    it { should be_able_to :subscribe, question }
   end
 end

@@ -5,7 +5,7 @@ feature 'User can add links to answer', %q(
   As an answer's author
   I'd like to be able to add links
 ) do
-  context 'Authentithicated user give answer', js: true do
+  context 'Authenticated user give answer', js: true do
     given(:user) { create(:user) }
     given(:question) { create(:question) }
     given(:gmail_url) { 'https://gmail.com' }
@@ -76,7 +76,7 @@ feature 'User can add links to answer', %q(
     end
   end
 
-  context 'Unauthentithicated user', js: true do
+  context 'Unauthenticated user', js: true do
     given(:answer) { create(:answer) }
     given(:gmail_url) { 'https://gmail.com' }
     given!(:link) { create(:link, linkable: answer, name: 'My link', url: gmail_url) }

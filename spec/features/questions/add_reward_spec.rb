@@ -5,7 +5,7 @@ feature 'User can add reward to question', %q(
   As an question's author
   I'd like to be able to add reward
 ) do
-  describe 'Authentithicated user asks question', js: true do
+  describe 'Authenticated user asks question', js: true do
     given(:user) { create(:user) }
 
     background do

@@ -10,7 +10,7 @@ feature 'User can add comments to answer', %q(
   given(:user) { create(:user) }
   given(:comment_text) { 'Comment text' }
 
-  describe 'Authentithicated user' do
+  describe 'Authenticated user' do
     background do
       login(user)
       visit question_path(question)
@@ -47,7 +47,7 @@ feature 'User can add comments to answer', %q(
     end
   end
 
-  scenario 'Unauthentithicated user tries add comment' do
+  scenario 'Unauthenticated user tries add comment' do
     visit question_path(question)
 
     within "#answer-#{answer.id}" do

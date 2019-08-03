@@ -7,6 +7,7 @@ require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'sidekiq/testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -39,6 +40,10 @@ RSpec.configure do |config|
   config.include FeaturesHelpers, type: :feature
   config.include OmniauthHelpers, type: :feature
   config.include ApiHelpers, type: :request
+
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
 
   Capybara.javascript_driver = :selenium_chrome_headless
 

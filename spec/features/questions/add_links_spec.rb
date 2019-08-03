@@ -5,7 +5,7 @@ feature 'User can add links to question', %q(
   As an question's author
   I'd like to be able to add links
 ) do
-  describe 'Authentithicated user asks question', js: true do
+  describe 'Authenticated user asks question', js: true do
     given(:user) { create(:user) }
     given(:gist_url) { 'https://gist.github.com/shuklineg/781f42ffe9faad73c559b11cfb20e7aa' }
     given(:google_url) { 'https://www.google.com' }
@@ -66,7 +66,7 @@ feature 'User can add links to question', %q(
     end
   end
 
-  context 'Unauthentithicated user', js: true do
+  context 'Unauthenticated user', js: true do
     given!(:question) { create(:question) }
     given(:gmail_url) { 'https://gmail.com' }
     given!(:link) { create(:link, linkable: question, name: 'My link', url: gmail_url) }

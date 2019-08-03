@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :rewards, through: :answers
   has_many :votes, dependent: :destroy
   has_many :authorizations, dependent: :destroy
+  has_and_belongs_to_many :subscriptions, class_name: 'Question'
 
   def author_of?(resource)
     resource&.user_id == id
@@ -35,5 +36,14 @@ class User < ApplicationRecord
 
   def auth_confirmed?(auth)
     auth && authorizations.find_by(uid: auth.uid, provider: auth.provider)&.confirmed?
+  end
+
+  def subscribe(question)
+    subscriptions << question
+    save!
+  end
+
+  def subscribed?(question)
+    subscriptions.include?(question)
   end
 end

@@ -28,3 +28,5 @@
 
 # Ignore database configuration
 /config/database.yml
+
+dump.rdb

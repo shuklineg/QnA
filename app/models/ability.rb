@@ -30,6 +30,7 @@ class Ability
     can :destroy, ActiveStorage::Attachment, record: { user_id: user.id }
     can :best, Answer, question: { user_id: user.id }
     can %i[vote_up vote_down], [Answer, Question]
+    can :subscribe, Question
     cannot %i[vote_up vote_down], [Answer, Question], user_id: user.id
   end
 end

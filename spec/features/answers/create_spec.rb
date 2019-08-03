@@ -7,6 +7,7 @@ feature 'User can create answer', %q(
 ) do
   given(:user) { create(:user) }
   given(:question) { create(:question, user: user) }
+  given!(:subscribed_user) { create(:user, subscriptions: [question]) }
 
   describe 'Authenticated user', js: true do
     background do
@@ -22,6 +23,18 @@ feature 'User can create answer', %q(
       within '.answers' do
         expect(page).to have_content 'Answer body'
       end
+    end
+
+    scenario 'Subscribed user receive email' do
+      fill_in 'Body', with: 'Answer body'
+
+      Sidekiq::Testing.inline! do
+        click_on 'Answer the question'
+        sleep(1)
+        open_email subscribed_user.email
+      end
+
+      expect(current_email).to have_content 'Answer body'
     end
 
     scenario 'Answer the question with error' do

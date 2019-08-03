@@ -31,10 +31,13 @@ feature 'User can sign in', %q(
     mock_auth :vkontakte
     click_on 'Sign in with Vkontakte'
     fill_in 'Email', with: 'new@user.com'
-    click_on 'Sign up'
-    expect(page).to have_content 'A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.'
 
-    open_email 'new@user.com'
+    Sidekiq::Testing.inline! do
+      click_on 'Sign up'
+      expect(page).to have_content 'A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.'
+      sleep(1)
+      open_email 'new@user.com'
+    end
     current_email.click_link 'Confirm my account'
     expect(page).to have_content 'Your email address has been successfully confirmed.'
   end
@@ -50,9 +53,11 @@ feature 'User can sign in', %q(
     visit new_user_session_path
     click_on 'Sign in with Vkontakte'
     fill_in 'Email', with: 'anower@user.com'
-    click_on 'Sign up'
-
-    open_email 'anower@user.com'
+    Sidekiq::Testing.inline! do
+      click_on 'Sign up'
+      sleep(1)
+      open_email 'anower@user.com'
+    end
     current_email.click_link 'Confirm my account'
     expect(page).to have_content 'Your email address has been successfully confirmed.'
   end

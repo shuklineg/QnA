@@ -40,6 +40,16 @@ feature 'User can create question', %q(
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
     end
+
+    scenario 'Author subscribed by default' do
+      fill_in 'Title', with: 'Test question'
+      fill_in 'Body', with: 'question text'
+
+      click_on 'Ask'
+
+      expect(page).to_not have_content('Subscribe')
+      expect(page).to have_content('Unsubscribe')
+    end
   end
 
   context 'multiple sessioins', js: true do

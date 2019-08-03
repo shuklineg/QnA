@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_140124) do
+ActiveRecord::Schema.define(version: 2019_08_03_164044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,13 @@ ActiveRecord::Schema.define(version: 2019_07_25_140124) do
     t.index ["user_id"], name: "index_questions_on_user_id"
   end
 
+  create_table "questions_users", id: false, force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["question_id", "user_id"], name: "index_questions_users_on_question_id_and_user_id"
+    t.index ["user_id", "question_id"], name: "index_questions_users_on_user_id_and_question_id"
+  end
+
   create_table "rewards", force: :cascade do |t|
     t.string "name"
     t.bigint "question_id"
@@ -149,11 +156,8 @@ ActiveRecord::Schema.define(version: 2019_07_25_140124) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.string "email_confirmation_token"
-    t.boolean "email_confirmation_required"
     t.boolean "admin", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["email_confirmation_token"], name: "index_users_on_email_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

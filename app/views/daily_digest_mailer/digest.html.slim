@@ -1,2 +1,4 @@
-h1 DailyDigest#digest
-p = @greeting + ", find me in app/views/daily_digest_mailer/digest.html.slim"
+h1 Daily questions digest
+ul
+  - @questions.each do |question|
+    li= question.title
