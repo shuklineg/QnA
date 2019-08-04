@@ -10,6 +10,7 @@ RSpec.describe QuestionSubscriptionJob, type: :job do
 
   it 'calls Service::QuestionSubscription#send_subscription' do
     expect(service).to receive(:send_subscription).with(answer)
+
     QuestionSubscriptionJob.perform_now(answer)
   end
 end

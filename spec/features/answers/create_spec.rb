@@ -7,7 +7,8 @@ feature 'User can create answer', %q(
 ) do
   given(:user) { create(:user) }
   given(:question) { create(:question, user: user) }
-  given!(:subscribed_user) { create(:user, subscriptions: [question]) }
+  given!(:subscribed_user) { create(:user) }
+  given!(:subscription) { create(:subscription, user: subscribed_user, question: question) }
 
   describe 'Authenticated user', js: true do
     background do

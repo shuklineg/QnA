@@ -7,6 +7,8 @@ feature 'User can subscribe to the question', %q(
 ) do
   given(:question) { create(:question) }
   given(:user) { create(:user) }
+  given(:subscribed_question) { create(:question) }
+  given!(:subscription) { create(:subscription, user: user, question: subscribed_question)}
 
   scenario 'Unauthenticated user tries subscribe' do
     visit question_path(question)
@@ -15,8 +17,6 @@ feature 'User can subscribe to the question', %q(
   end
 
   describe 'Authenticated user', js: true do
-    given(:subscribed_question) { create(:question, subscribed_users: [user]) }
-
     background { login(user) }
 
     scenario 'Authenticated user tries to subscribe' do

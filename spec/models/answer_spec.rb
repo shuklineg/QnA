@@ -15,6 +15,12 @@ RSpec.describe Answer, type: :model do
     expect(Answer.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
   end
 
+  it 'perform question subscription job' do
+    expect(QuestionSubscriptionJob).to receive(:perform_later).with(instance_of(Answer))
+
+    Answer.create(body: 'Answer body', user: create(:user), question: create(:question))
+  end
+
   describe 'Answer#best!' do
     let(:question) { create(:question) }
     let(:user) { create(:user) }

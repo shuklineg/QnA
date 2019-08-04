@@ -14,7 +14,7 @@ class AnswersController < ApplicationController
     authorize! :create, Answer
     question.answers << answer
     answer.user = current_user
-    QuestionSubscriptionJob.perform_now(answer) if answer.save
+    answer.save
   end
 
   def destroy

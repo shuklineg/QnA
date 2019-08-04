@@ -7,9 +7,9 @@ div id="question-#{question.id}"
     =link_to 'Delete question', question, method: :delete
   -if can? :update, question
     =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
-  -if can? :subscribe, question
+  -if can? :create, Subscription
     .subscription
-      = render 'subscription', question: question
+      = render 'subscriptions/subscription', question: question
 
   .votes
     -if can? :vote_up, question

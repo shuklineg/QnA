@@ -26,6 +26,8 @@ describe Ability, type: :model do
     let(:file) { fixture_file_upload("#{Rails.root}/spec/rails_helper.rb", 'text/plain') }
     let(:answer) { create(:answer, files: [file], user: user) }
     let(:question) { create(:question, files: [file], user: user) }
+    let(:subscription) { create(:subscription, user: user) }
+    let(:other_user_subscription) { create(:subscription, user: other) }
     let(:other_user_answer) { create(:answer, files: [file], user: other) }
     let(:other_user_question) { create(:question, files: [file], user: other) }
 
@@ -35,6 +37,7 @@ describe Ability, type: :model do
     it { should be_able_to :create, Question }
     it { should be_able_to :create, Answer }
     it { should be_able_to :create, Comment }
+    it { should be_able_to :create, Subscription }
 
     it { should be_able_to :update, question }
     it { should_not be_able_to :update, other_user_question }
@@ -54,6 +57,9 @@ describe Ability, type: :model do
     it { should be_able_to :destroy, answer.files.first }
     it { should_not be_able_to :destroy, other_user_answer.files.first }
 
+    it { should be_able_to :destroy, subscription }
+    it { should_not be_able_to :destroy, other_user_subscription }
+
     it { should be_able_to :best, create(:answer, question: question) }
     it { should_not be_able_to :best, create(:answer, question: other_user_question) }
 
@@ -63,6 +69,5 @@ describe Ability, type: :model do
     it { should be_able_to :vote_down, other_user_question }
     it { should_not be_able_to :vote_up, answer }
     it { should_not be_able_to :vote_down, question }
-    it { should be_able_to :subscribe, question }
   end
 end

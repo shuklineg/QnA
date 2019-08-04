@@ -23,12 +23,6 @@ RSpec.describe AnswersController, type: :controller do
 
         expect(response).to render_template :create
       end
-
-      it 'send email to subscribed users' do
-        expect(QuestionSubscriptionJob).to receive(:perform_now).with(instance_of(Answer))
-
-        post :create, params: { answer: attributes_for(:answer), question_id: question, format: :js }
-      end
     end
 
     context 'with invalid attributes' do

@@ -5,7 +5,8 @@ class Question < ApplicationRecord
 
   has_many :answers, -> { order(best: :desc, id: :asc) }, dependent: :destroy
   has_one :reward, dependent: :destroy
-  has_and_belongs_to_many :subscribed_users, class_name: 'User'
+  has_many :subscriptions, dependent: :destroy
+  has_many :subscribed_users, through: :subscriptions, source: :user
   belongs_to :user
 
   has_many_attached :files
@@ -14,11 +15,11 @@ class Question < ApplicationRecord
 
   validates :title, :body, presence: true
 
-  before_create :subscribe_author
+  after_create :subscribe_author
 
   private
 
   def subscribe_author
-    subscribed_users << user
+    Subscription.create!(question: self, user: user)
   end
 end
