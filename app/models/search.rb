@@ -1,7 +1,7 @@
 class Search
   include ActiveModel::Validations
 
-  INDICES = [['Answer', 'answer'], ['Question', 'question'], ['User', 'user'], ['Comment', 'comment']].freeze
+  INDICES = %w[answer question user comment].freeze
 
   attr_accessor :query, :indices
 
@@ -29,6 +29,6 @@ class Search
   private
 
   def validate_indices
-    errors.add(:indices) unless (indices - INDICES.map { |index| index[1] }).empty?
+    errors.add(:indices) unless (indices - INDICES).empty?
   end
 end
