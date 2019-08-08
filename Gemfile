@@ -58,6 +58,7 @@ gem 'whenever', require: false
 gem 'thinking-sphinx'
 gem 'mysql2'
 gem 'mini_racer'
+gem 'bootstrap'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

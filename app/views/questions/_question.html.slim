@@ -1,22 +1,22 @@
-div id="question-#{question.id}"
-  h2=question.title
-  p=question.body
+div.question.card.m-3 data-question-id="#{question.id}" id="question-#{question.id}"
+  h2.card-title= link_to question.title, question_path(question)
+  p.card-body= question.body
   -if question.files.attached?
     = render 'shared/attachments', attachments: question.files, resource: question
   -if can? :destroy, question
-    =link_to 'Delete question', question, method: :delete
+    =link_to 'Delete question', question, method: :delete, class: 'm-2'
   -if can? :update, question
-    =link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
+    =link_to 'Edit', '#', data: { question_id: question.id }, class: 'm-2 edit-question-link'
   -if can? :create, Subscription
     .subscription
       = render 'subscriptions/subscription', question: question
 
   .votes
     -if can? :vote_up, question
-      = link_to 'Vote up', vote_up_question_path(question), class: '.vote-up', method: :post, remote: true
-    .votes-count= question.rating
+      = link_to 'Vote up', vote_up_question_path(question), class: 'vote-up m-2', method: :post, remote: true
+    .votes-count.m-2= question.rating
     -if can? :vote_down, question
-      = link_to 'Vote down', vote_down_question_path(question), class: '.vote-down', method: :post, remote: true
+      = link_to 'Vote down', vote_down_question_path(question), class: 'vote-down m-2', method: :post, remote: true
 
   = render 'shared/links', links: question.links
 

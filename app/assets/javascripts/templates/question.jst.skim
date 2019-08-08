@@ -1,6 +1,7 @@
-div id="question-#{@question.id}"
-  h2 #{@question.title}
-  p #{@question.body}
+div id="question-#{@question.id}" class="question card m-3"
+  h2.card-title 
+    a href="/questions/#{@question.id}" #{@question.title}
+  p.card-body #{@question.body}
   .attachments
     - @files.forEach (file) ->
       .file id="attachment-#{file.id}"
@@ -9,10 +10,10 @@ div id="question-#{@question.id}"
     a href="/questions/#{@question.id}" data-method='delete' Delete question
   div.votes
     - if current_user.id && !current_user.author_of(@question)
-      a href="/questions/#{@question.id}/vote_up" class='.vote-up' data-method='post' data-remote='true' Vote up
-    div.votes-count 0
+      a href="/questions/#{@question.id}/vote_up" class='.vote-up  m-2' data-method='post' data-remote='true' Vote up
+    div.votes-count.m-2 0
     - if current_user.id && !current_user.author_of(@question)
-      a href="/questions/#{@question.id}/vote_down" class='.vote-down' data-method='post' data-remote='true' Vote down
+      a href="/questions/#{@question.id}/vote_down" class='.vote-down  m-2' data-method='post' data-remote='true' Vote down
 
   p Links:
   ul.links

@@ -1,5 +1,5 @@
 $('#question-<%=question.id%> .question-errors').html('<%= render 'shared/errors', resource: question %>');
 
 <%- unless question.errors.present? %>
-  $('#question-<%=question.id%>').replaceWith('<%= j render question %>');
+  $('#question-<%=question.id%>').replaceWith('<%= j render question %>')
 <% end %>

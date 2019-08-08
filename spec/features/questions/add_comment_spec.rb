@@ -69,6 +69,10 @@ feature 'User can add comments to question', %q(
         visit question_path(question)
       end
 
+      Capybara.using_session('guest_questions_page') do
+        visit questions_path
+      end
+
       Capybara.using_session('another_user') do
         login(another_user)
         visit question_path(question)
@@ -95,6 +99,12 @@ feature 'User can add comments to question', %q(
 
       Capybara.using_session('another_user') do
         within '.question' do
+          expect(page).to have_content comment_text
+        end
+      end
+
+      Capybara.using_session('guest_questions_page') do
+        within first('.question') do
           expect(page).to have_content comment_text
         end
       end

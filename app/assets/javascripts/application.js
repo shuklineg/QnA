@@ -16,6 +16,8 @@
 //= require jquery3
 //= require cocoon
 //= require action_cable
+//= require popper
+//= require bootstrap-sprockets
 //= require_tree .
 
 var App = App || {};
