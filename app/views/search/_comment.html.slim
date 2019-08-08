@@ -1,0 +1,4 @@
+.found_comment
+  p comment
+  .body= result.body
+  .link= link_to 'Open question', result.commentable.is_a?(Question) ? result.commentable : result.commentable.question
