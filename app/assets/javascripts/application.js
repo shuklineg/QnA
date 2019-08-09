@@ -23,3 +23,4 @@
 var App = App || {};
 
 App.cable = ActionCable.createConsumer();
+App.channels = []

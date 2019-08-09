@@ -1,5 +1,5 @@
 $(document).on 'turbolinks:load', ->
-  $('.questions').on 'click', '.edit-question-link', (e) ->
+  $('.questions-wrapper').on 'click', '.edit-question-link', (e) ->
     e.preventDefault()
     $(this).hide()
     questionId = $(this).data 'questionId'

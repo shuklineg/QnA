@@ -5,6 +5,7 @@ $(document).on 'turbolinks:load', ->
       App.cable.subscriptions.create { channel: 'CommentsChannel', questionId: questionId },
       connected: ->
         @perform 'follow'
+        App.channels.push this
       ,
       received: (data) ->
         if current_user.id != data.comment.user_id
