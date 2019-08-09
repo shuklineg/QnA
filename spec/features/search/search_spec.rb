@@ -22,7 +22,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: question.title
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to have_content question.title
@@ -43,7 +43,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: question.title
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to_not have_content question.title
@@ -57,7 +57,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: answer.body
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to have_content answer.body
@@ -76,7 +76,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: answer.body
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to_not have_content answer.body
@@ -89,7 +89,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: comment.body
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to have_content comment.body
@@ -108,7 +108,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: comment.body
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to_not have_content comment.body
@@ -122,7 +122,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: user.email
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to have_content user.email
@@ -139,7 +139,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: user.email
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       expect(page).to_not have_content user.email
@@ -157,7 +157,7 @@ feature 'User can search for question', "
       fill_in :search_query, with: keyword
 
       ThinkingSphinx::Test.run do
-        click_on 'Search'
+        click_button 'Search'
       end
 
       within '.found_question' do

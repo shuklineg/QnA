@@ -1,1 +1,10 @@
 .hidden { display: none; }
+.flash-alert { 
+  @extend .alert;
+  @extend .alert-danger;
+}
+
+.flash-info { 
+  @extend .alert;
+  @extend .alert-info;
+}

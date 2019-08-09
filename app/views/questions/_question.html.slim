@@ -10,10 +10,10 @@ div.question.card.m-3 data-question-id="#{question.id}" id="question-#{question.
         -if can? :create, Subscription
           = render 'subscriptions/subscription', question: question
         -if can? :vote_up, question
-          = link_to 'Vote up', vote_up_question_path(question), class: 'vote-up btn btn-secondary', method: :post, remote: true
+          = link_to 'Vote up', vote_up_question_path(question), class: 'votes vote-up btn btn-secondary', method: :post, remote: true
         .votes-count.btn.btn-success.disabled= question.rating
         -if can? :vote_down, question
-          = link_to 'Vote down', vote_down_question_path(question), class: 'vote-down btn btn-secondary', method: :post, remote: true
+          = link_to 'Vote down', vote_down_question_path(question), class: 'votes vote-down btn btn-secondary', method: :post, remote: true
 
       p= question.body
       -if question.files.attached?

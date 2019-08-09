@@ -32,7 +32,7 @@ feature 'User can vote for the question', %q(
       end
     end
 
-    scenario 'can vote down for the answer' do
+    scenario 'can vote down for the question' do
       within "#question-#{question.id}" do
         expect(page.find('.votes-count')).to have_content '0'
         click_on 'Vote down'

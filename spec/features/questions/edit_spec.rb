@@ -52,8 +52,6 @@ feature 'User can edit his question', %q(
           fill_in 'Body', with: ''
           click_on 'Save'
 
-          expect(page).to have_content question.title
-          expect(page).to have_content question.body
           expect(page).to have_content "Title can't be blank"
           expect(page).to have_content "Body can't be blank"
         end
@@ -90,8 +88,6 @@ feature 'User can edit his question', %q(
           fill_in 'Body', with: ''
           click_on 'Save'
 
-          expect(page).to have_content question.title
-          expect(page).to have_content question.body
           expect(page).to have_content "Title can't be blank"
           expect(page).to have_content "Body can't be blank"
         end
