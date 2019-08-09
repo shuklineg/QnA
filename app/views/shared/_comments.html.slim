@@ -1,4 +1,4 @@
-h4 Comments
+h5 Comments:
 div.comments data-commentable="#{commentable.class.name.underscore}" data-commentable-id="#{commentable.id}" = render commentable.comments
 - if current_user
   = link_to 'Add comment', '#', class: 'add-comment-link', data: { commentable: "#{commentable.class.name.underscore}-#{commentable.id}" }

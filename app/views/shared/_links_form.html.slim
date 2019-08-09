@@ -3,4 +3,4 @@ p Links:
   = form.fields_for :links do |f|
     = render 'shared/link_fields', f: f
   .add_link
-    = link_to_add_association 'Add link', form, :links, partial: 'shared/link_fields'
+    = link_to_add_association 'Add link', form, :links, partial: 'shared/link_fields', class: 'btn btn-secondary m-2'

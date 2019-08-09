@@ -1,37 +1,38 @@
 div.question.card.m-3 data-question-id="#{question.id}" id="question-#{question.id}"
-  h2.card-title= link_to question.title, question_path(question)
-  p.card-body= question.body
-  -if question.files.attached?
-    = render 'shared/attachments', attachments: question.files, resource: question
-  -if can? :destroy, question
-    =link_to 'Delete question', question, method: :delete, class: 'm-2'
-  -if can? :update, question
-    =link_to 'Edit', '#', data: { question_id: question.id }, class: 'm-2 edit-question-link'
-  -if can? :create, Subscription
-    .subscription
-      = render 'subscriptions/subscription', question: question
+  h5.card-header= link_to question.title, question_path(question)
+  .card-body
+    .question-view-port
+      .btn-group.float-right.btn-group-sm
+        -if can? :destroy, question
+          =link_to 'Delete question', question, method: :delete, class: 'btn btn-danger'
+        -if can? :update, question
+          =link_to 'Edit', '#', data: { question_id: question.id }, class: 'btn btn-secondary edit-question-link'
+        -if can? :create, Subscription
+          = render 'subscriptions/subscription', question: question
+        -if can? :vote_up, question
+          = link_to 'Vote up', vote_up_question_path(question), class: 'vote-up btn btn-secondary', method: :post, remote: true
+        .votes-count.btn.btn-success.disabled= question.rating
+        -if can? :vote_down, question
+          = link_to 'Vote down', vote_down_question_path(question), class: 'vote-down btn btn-secondary', method: :post, remote: true
 
-  .votes
-    -if can? :vote_up, question
-      = link_to 'Vote up', vote_up_question_path(question), class: 'vote-up m-2', method: :post, remote: true
-    .votes-count.m-2= question.rating
-    -if can? :vote_down, question
-      = link_to 'Vote down', vote_down_question_path(question), class: 'vote-down m-2', method: :post, remote: true
+      p= question.body
+      -if question.files.attached?
+        = render 'shared/attachments', attachments: question.files, resource: question
 
-  = render 'shared/links', links: question.links
+      = render 'shared/links', links: question.links
 
-  = form_with model: question, class: 'hidden', html: { id: "edit-question-#{question.id}" } do |f|
-    div.question-errors
-      = render 'shared/errors', resource: question
-    .field
-      = f.label :title
-      = f.text_field :title
-    .field
-      = f.label :body
-      = f.text_field :body
-    .field
-      = f.label :files
-      = f.file_field :files, multiple: true, direct_upload: true
-    = render 'shared/links_form', form: f
-    = f.submit 'Save'
-  = render 'shared/comments', commentable: question
+    = form_with model: question, class: 'hidden question-form', html: { id: "edit-question-#{question.id}" } do |f|
+      div.question-errors
+        = render 'shared/errors', resource: question
+      .field.form-group
+        = f.label :title
+        = f.text_field :title, class: 'form-control'
+      .field.form-group
+        = f.label :body
+        = f.text_field :body, class: 'form-control'
+      .field.form-group
+        = f.label :files
+        = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
+      = render 'shared/links_form', form: f
+      = f.submit 'Save', class: 'btn btn-primary'
+    = render 'shared/comments', commentable: question

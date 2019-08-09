@@ -1,0 +1,8 @@
+nav.navbar.navbar-expand.navbar-dark.bg-dark
+  div.collapse.navbar-collapse
+    ul.navbar-nav
+      li.nav-item= link_to 'Questions', questions_path, class: 'nav-link'
+      - if can? :read, Search
+        li.nav-item= link_to 'Search', search_path, class: 'nav-link'
+      - if current_user
+        li.nav-item= link_to 'Logout', destroy_user_session_path, method: :delete, class: 'nav-link'
