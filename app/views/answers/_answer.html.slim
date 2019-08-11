@@ -8,10 +8,10 @@ div.answer.card.p-3 id='answer-#{answer.id}'
         = link_to 'Edit', '#', class: 'edit-answer-link btn btn-secondary', data: { answer_id: answer.id }
       -if !answer.best? && can?(:best, answer)
         =link_to 'Best', best_answer_path(answer), method: :post, remote: true, class: 'btn btn-primary'
-      -if can? :vote_up, question
+      -if can? :vote_up, answer
         = link_to 'Vote up', vote_up_answer_path(answer), class: 'votes vote-up btn btn-secondary', method: :post, remote: true
       .votes-count.btn.btn-success.disabled= answer.rating
-      -if can? :vote_down, question
+      -if can? :vote_down, answer
         = link_to 'Vote down', vote_down_answer_path(answer), class: 'votes vote-down btn btn-secondary', method: :post, remote: true
 
     p= answer.body

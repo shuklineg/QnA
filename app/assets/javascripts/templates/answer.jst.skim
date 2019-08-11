@@ -18,7 +18,7 @@ div.answer.card.p-3  id="answer-#{@answer.id}"
           .file id="attachment-#{file.id}"
             a href="#{file.url}" #{file.name}
 
-    - if @files.length
+    - if @links.length
       h5 Links:
       ul.links.list-group.m-2
         - @links.forEach (link)->
