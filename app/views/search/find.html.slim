@@ -1,11 +1,12 @@
 = form_with model: @search, url: search_path, method: :get, local: true do |f|
   div.search-errors
     = render 'shared/errors', resource: @search
-  .field
+  .field.form-group
     = f.label :query
-    = f.text_field :query
-  .field
-    = f.select :indices, options_for_select(Search::INDICES.map { |index| [index.capitalize, index] }, @search.indices), { include_blank: false, include_hidden: false }, { multiple: true }
-    = f.submit 'Search'
+    = f.text_field :query, class: 'form-control-file'
+  .field.form-group
+    = f.label :indices
+    = f.select :indices, options_for_select(Search::INDICES.map { |index| [index.capitalize, index] }, @search.indices), { include_blank: false, include_hidden: false}, { multiple: true, class: 'form-control-file' }
+  = f.submit 'Search', class: 'btn btn-primary'
 .search-results
   = render 'results'

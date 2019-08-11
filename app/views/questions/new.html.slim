@@ -1,23 +1,23 @@
-= form_with model: question, local: true do |f|
+= form_with model: question, local: true, class: 'm-5' do |f|
   div.question-errors
     = render 'shared/errors', resource: question
-  .field
+  .field.form-group
     = f.label :title
-    = f.text_field :title
-  .field
+    = f.text_field :title, class: 'form-control'
+  .field.form-group
     = f.label :body
-    = f.text_field :body
-  .field
+    = f.text_field :body, class: 'form-control'
+  .field.form-group
     = f.label :files
-    = f.file_field :files, multiple: true, direct_upload: true
+    = f.file_field :files, multiple: true, direct_upload: true, class: 'form-control-file'
   .reward
-    p Reward
+    h5 Reward:
     = f.fields_for :reward do |r|
-      .field
+      .field.form-group
         = r.label :name
-        = r.text_field :name
-      .field
+        = r.text_field :name, class: 'form-control'
+      .field.form-group
         = r.label :image
-        = r.file_field :image, direct_upload: true  
+        = r.file_field :image, direct_upload: true, class: 'form-control-file'
   = render 'shared/links_form', form: f
-  = f.submit 'Ask'
+  = f.submit 'Ask', class: 'btn btn-primary'

@@ -1,21 +1,23 @@
-div.answer id='answer-#{answer.id}'
+div.answer.card.p-3 id='answer-#{answer.id}'
 
-  p= answer.body
+  .card-body
+    .btn-group.float-right.btn-group-sm
+      -if can? :destroy, answer
+        = link_to 'Delete answer', answer, remote: true, method: :delete, class: 'btn btn-danger'
+      -if can? :update, answer
+        = link_to 'Edit', '#', class: 'edit-answer-link btn btn-secondary', data: { answer_id: answer.id }
+      -if !answer.best? && can?(:best, answer)
+        =link_to 'Best', best_answer_path(answer), method: :post, remote: true, class: 'btn btn-primary'
+      -if can? :vote_up, question
+        = link_to 'Vote up', vote_up_answer_path(answer), class: 'votes vote-up btn btn-secondary', method: :post, remote: true
+      .votes-count.btn.btn-success.disabled= answer.rating
+      -if can? :vote_down, question
+        = link_to 'Vote down', vote_down_answer_path(answer), class: 'votes vote-down btn btn-secondary', method: :post, remote: true
+
+    p= answer.body
+
   - if answer.files.attached?
     = render 'shared/attachments', attachments: answer.files, resource: answer
-  -if can? :destroy, answer
-    = link_to 'Delete answer', answer, remote: true, method: :delete
-  -if can? :update, answer
-    = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
-  -if !answer.best? && can?(:best, answer)
-    =link_to 'Best', best_answer_path(answer), method: :post, remote: true
-
-  .votes
-    -if can? :vote_up, answer
-      = link_to 'Vote up', vote_up_answer_path(answer), class: '.vote-up', method: :post, remote: true
-    .votes-count= answer.rating
-    -if can? :vote_down, answer
-      = link_to 'Vote down', vote_down_answer_path(answer), class: '.vote-down', method: :post, remote: true
 
   = render 'shared/links', links: answer.links
 

@@ -1,23 +1,30 @@
-div id="question-#{@question.id}" class="question card m-3"
-  h2.card-title 
+div.question.card.m-3 id="question-#{@question.id}"
+  h5.card-header
     a href="/questions/#{@question.id}" #{@question.title}
-  p.card-body #{@question.body}
-  .attachments
-    - @files.forEach (file) ->
-      .file id="attachment-#{file.id}"
-        a href="#{file.url}" #{file.name}
-  - if current_user.author_of(@question)
-    a href="/questions/#{@question.id}" data-method='delete' Delete question
-  div.votes
-    - if current_user.id && !current_user.author_of(@question)
-      a href="/questions/#{@question.id}/vote_up" class='.vote-up  m-2' data-method='post' data-remote='true' Vote up
-    div.votes-count.m-2 0
-    - if current_user.id && !current_user.author_of(@question)
-      a href="/questions/#{@question.id}/vote_down" class='.vote-down  m-2' data-method='post' data-remote='true' Vote down
+  .card-body
+    .question-view-port
+      .btn-group.float-right.btn-group-sm
+        - if current_user.author_of(@question)
+          a.btn.btn-danger href="/questions/#{@question.id}" data-method='delete' Delete question
+        - if current_user.id && !current_user.author_of(@question)
+          a.votes.vote-up.btn.btn-secondary href="/questions/#{@question.id}/vote_up" data-method='post' data-remote='true' Vote up
+        .votes-count.btn.btn-success.disabled 0
+        - if current_user.id && !current_user.author_of(@question)
+          a.votes.vote-down.btn.btn-secondary href="/questions/#{@question.id}/vote_down" data-method='post' data-remote='true' Vote down
 
-  p Links:
-  ul.links
-    - @links.forEach (link) ->
-      li id="link-#{link.id}"
-        a href="#{{link.url}}"
-          == link.name
+      p #{@question.body}
+
+      - if @files.length
+        .attachments
+          h5 Attachments:
+          - @files.forEach (file)->
+            .file id="attachment-#{file.id}"
+              a href="#{file.url}" #{file.name}
+
+      - if @files.length
+        h5 Links:
+        ul.links.list-group.m-2
+          - @links.forEach (link)->
+            li.list-group-item id="link-#{link.id}"
+              a href="#{{link.url}}"
+                == link.name

@@ -1,21 +1,27 @@
-div.answer id="answer-#{@answer.id}"
-  p #{@answer.body}
-  .attachments
-    - @files.forEach (file) ->
-      .file id="attachment-#{file.id}"
-        a href="#{file.url}" #{file.name}
-  - if current_user.author_of(@answer)
-    a href="/answers/#{@answer.id}" data-method='delete' data-remote='true' rel='nofollow' Delete answer
-  div.votes
-    - if current_user.id && !current_user.author_of(@answer)
-      a href="/answers/#{@answer.id}/vote_up" class='.vote-up' data-method='post' data-remote='true' Vote up
-    div.votes-count 0
-    - if current_user.id && !current_user.author_of(@answer)
-      a href="/answers/#{@answer.id}/vote_down" class='.vote-down' data-method='post' data-remote='true' Vote down
+div.answer.card.p-3  id="answer-#{@answer.id}"
+  .card-body
+    .btn-group.float-right.btn-group-sm
+      - if current_user.author_of(@answer)
+        a.btn.btn-danger href="/answers/#{@answer.id}" data-method='delete' data-remote='true' rel='nofollow' Delete answer
+      - if current_user.id && !current_user.author_of(@answer)
+        a.votes.vote-up.btn.btn-secondary href="/answers/#{@answer.id}/vote_up" data-method='post' data-remote='true' Vote up
+      .votes-count.btn.btn-success.disabled 0
+      - if current_user.id && !current_user.author_of(@answer)
+        a.votes.vote-down.btn.btn-secondary href="/answers/#{@answer.id}/vote_down" data-method='post' data-remote='true' Vote down
+      
+    p #{@answer.body}
 
-  p Links:
-  ul.links
-    - @links.forEach (link) ->
-      li id="link-#{link.id}"
-        a href="#{{link.url}}"
-          == link.name
+    - if @files.length
+      .attachments
+        h5 Attachments:
+        - @files.forEach (file)->
+          .file id="attachment-#{file.id}"
+            a href="#{file.url}" #{file.name}
+
+    - if @files.length
+      h5 Links:
+      ul.links.list-group.m-2
+        - @links.forEach (link)->
+          li.list-group-item id="link-#{link.id}"
+            a href="#{{link.url}}"
+              == link.name

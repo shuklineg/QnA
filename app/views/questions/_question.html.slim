@@ -16,6 +16,7 @@ div.question.card.m-3 data-question-id="#{question.id}" id="question-#{question.
           = link_to 'Vote down', vote_down_question_path(question), class: 'votes vote-down btn btn-secondary', method: :post, remote: true
 
       p= question.body
+
       -if question.files.attached?
         = render 'shared/attachments', attachments: question.files, resource: question
 
