@@ -1,7 +1,8 @@
 .attachments
   h5 Attachments:
   - attachments.each do |attachment|
-    .file id="attachment-#{attachment.id}"
-      = link_to attachment.filename.to_s, url_for(attachment)
-      -if can? :destroy, attachment
-        = link_to 'Delete attachment', attachment_path(attachment), remote: true, method: :delete, class: 'm-2 btn btn-danger btn-sm'
+    - cache [current_user || 'guest', attachment] do
+      .file id="attachment-#{attachment.id}"
+        = link_to attachment.filename.to_s, url_for(attachment)
+        -if can? :destroy, attachment
+          = link_to 'Delete attachment', attachment_path(attachment), remote: true, method: :delete, class: 'm-2 btn btn-danger btn-sm'

@@ -1,7 +1,7 @@
 class Link < ApplicationRecord
   GIST_FORMAT = /^(https|http):\/\/gist\.github\.com\/([^\/]+)\/([a-f0-9]+)$/i
 
-  belongs_to :linkable, polymorphic: true
+  belongs_to :linkable, polymorphic: true, touch: true
 
   validates :name, :url, presence: true
   validates :url, url: true

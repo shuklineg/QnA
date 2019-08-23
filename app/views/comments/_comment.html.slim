@@ -1,5 +1,6 @@
-.comment.card.m-1 id="comment-#{comment.id}"
-  .user.card-header
-    = comment.user.email
-  .body.card-body
-    = comment.body
+- cache comment do
+  .comment.card.m-1 id="comment-#{comment.id}"
+    .user.card-header
+      = comment.user.email
+    .body.card-body
+      = comment.body
