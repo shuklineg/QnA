@@ -2,10 +2,11 @@
   h5 Links:
   ul.links.list-group.m-2
     - links.each do |link|
-      li.list-group-item id="link-#{link.id}"
-        -if link.gist?
-          -link.gist.each do |file|
-            p= file[:name]
-            code= file[:content]
-        -else
-          =link_to link.name, link.url
+      - cache [current_user || 'guest', link] do
+        li.list-group-item id="link-#{link.id}"
+          -if link.gist?
+            -link.gist.each do |file|
+              p= file[:name]
+              code= file[:content]
+          -else
+            =link_to link.name, link.url

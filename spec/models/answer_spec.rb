@@ -5,7 +5,7 @@ RSpec.describe Answer, type: :model do
   it_behaves_like 'commentable model'
   it_behaves_like 'linkable model'
 
-  it { should belong_to :question }
+  it { should belong_to(:question).touch(true) }
   it { should belong_to :user }
   it { should have_one(:reward) }
 
