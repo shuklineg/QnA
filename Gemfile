@@ -92,7 +92,7 @@ group :test do
   gem 'launchy'
   gem 'shoulda-matchers'
   gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
+  gem 'webdrivers'
   gem 'capybara-email'
   gem 'database_cleaner'
 end
