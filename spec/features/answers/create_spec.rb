@@ -31,7 +31,7 @@ feature 'User can create answer', %q(
 
       Sidekiq::Testing.inline! do
         click_on 'Answer the question'
-        sleep(1)
+        sleep(2)
         open_email subscribed_user.email
       end
 
