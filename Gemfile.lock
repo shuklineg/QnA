@@ -179,7 +179,7 @@ GEM
     innertube (1.1.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     joiner (0.4.2)
       activerecord (>= 5.2.beta1)
     jquery-rails (4.4.0)
